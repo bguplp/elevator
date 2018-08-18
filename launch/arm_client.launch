@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<!--EXAMPLE:
+
+roslaunch armadillo2 armadillo2.launch gazebo:=true moveit:=true
+
+rosrun rviz rviz -d `rospack find armadillo2_navigation`/rviz/hector_slam.rviz
+
+roslaunch elevator arm_server.launch
+
+roslaunch elevator arm_client.launch
+-->
+
+<launch>
+
+    <node name="client_demo_node" pkg="elevator" type="arm_client.py"
+       output="screen"></node>
+</launch>

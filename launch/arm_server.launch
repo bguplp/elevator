@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<!--EXAMPLE:
+roslaunch armadillo2 armadillo2.launch gazebo:=true moveit:=true
+
+roslaunch elevator arm_server.launch
+-->
+
+<launch>
+
+    <node name="arm_server_node" pkg="elevator" type="elevator_node"
+       output="screen"></node>
+</launch>
