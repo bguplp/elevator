@@ -125,7 +125,7 @@ def target_demo(x, y, z, frame_id):
 
     # build goal
     goal = SimpleTargetGoal()
-    goal.frame_id = frame_id #"/base_footprint"
+    goal.frame_id = frame_id # "/base_footprint" "/head_pan_link"
 
     # set target coordinates
     goal.x = x  # 0.5

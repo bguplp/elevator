@@ -54,14 +54,14 @@ class Button_finder:
             print 'No match was found' if threshold < 0.7
             else: display best estimated match's location with the highest threshold
         """
-        if threshold < 0.5 or threshold > 1:
-            print("[find_match] error: invalid threshold")
-            return
+        if threshold < 0.7 or threshold > 1:
+            print("No match was found")
+            return 0, -1, (-1, -1), -1, -1
 
         loc = np.where( self.res >= threshold)
         pts = zip(*loc[::-1])
         if not len(pts):
-            if threshold >= 0.5:
+            if threshold >= 0.7:
                 return self.find_match(threshold-0.005)
             else:
                 print("No match was found")
