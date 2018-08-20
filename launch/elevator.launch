@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <!--USAGE
 full demo:
-roslaunch elevator elevator.launch kinect:=true lidar:=true amcl:=true have_map:=true map:="`rospack find elevator`/maps/elevator.yaml" gazebo:=true world_name:="`rospack find elevator`/worlds/elevator.world" move_base:=true  moveit:=true
+roslaunch elevator elevator.launch kinect:=true lidar:=true amcl:=true have_map:=true map:="`rospack find elevator`/maps/elevator.yaml" gazebo:=true world_name:="`rospack find elevator`/worlds/elevator.world" move_base:=true  moveit:=true x:=1 y:=-2
+
+rosrun rviz rviz -d `rospack find armadillo2_navigation`/rviz/amcl.rviz
 
 only_elevator:
 roslaunch elevator elevator.launch kinect:=true lidar:=true amcl:=true have_map:=true map:="`rospack find elevator`/maps/only_elevator.yaml" gazebo:=true world_name:="`rospack find elevator`/worlds/only_elevator.world" move_base:=true  moveit:=true
@@ -56,6 +58,6 @@ roslaunch elevator arm_client.launch
     <arg name="teleop" value="$(arg teleop)"/>
   </include>
 
-  <!-- <include file="$(find arm_server)/launch/arm_server.launch"/> -->
+  <include file="$(find arm_server)/launch/arm_server.launch"/>
 
 </launch>

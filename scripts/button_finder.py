@@ -25,6 +25,7 @@ class Button_finder:
         template = cv2.imread(button_path, 0)
         origin_w, origin_h = template.shape[::-1]
         scale = scale_max
+        curr_scale = scale_max
 
         while(scale >= scale_min):
             scaled_template = cv2.resize(template, (int(scale*origin_w),int(scale*origin_h)))
@@ -37,9 +38,10 @@ class Button_finder:
                 return scale, curr_match
             elif curr_match[1] > ans[1]:
                 ans = curr_match
+                curr_scale = scale
             scale -= 0.1
 
-        return scale+0.1, ans
+        return curr_scale, ans
 
 
     def find_match(self, threshold):

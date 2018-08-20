@@ -9,8 +9,10 @@ import math
 import rospy
 import cv2
 from sensor_msgs.msg import Image, Range
+from control_msgs.msg import GripperCommandActionGoal
 from cv_bridge import CvBridge, CvBridgeError
 from button_finder import Button_finder
+import move_arm
 
 KINECT_YAW = math.pi *2/3
 KINECT_PITCH = math.pi *2/3
@@ -19,6 +21,7 @@ class image_converter:
 
   def __init__(self):
     self.image_pub = rospy.Publisher("image_buttons",Image, queue_size=10)
+    self.gripper_pub = rospy.Publisher("/gripper_controller/gripper_cmd/goal",GripperCommandActionGoal, queue_size=10)
 
     self.bridge = CvBridge()
     self.image_sub = rospy.Subscriber("/kinect2/qhd/image_color_rect",Image,self.camera_callback)
@@ -31,6 +34,18 @@ class image_converter:
     self.button_location = (-1,-1)
     self.button_height = -1
     self.button_width = -1
+
+    # move arm to 'button' position
+    move_arm.target_move(0, 0, 0, "button")
+
+    # close gripper
+    gc = GripperCommandActionGoal()
+    gc.goal.command.max_effort = 0.1
+    start_time = rospy.get_time()
+    print("gripper closing...")
+    self.gripper_pub.publish(gc)
+    print("gripper closed")
+
 
   def urf_callback(self, data):
     self.range = "%.2f" % data.range
@@ -50,7 +65,7 @@ class image_converter:
         self.threshold, \
         self.button_location, \
         self.button_height, \
-        self.button_width) = bf.find_match_multi_size(scale_min=0.6, scale_max=1)
+        self.button_width) = bf.find_match_multi_size(scale_min=0.2, scale_max=1)
 
     img_height, img_width = cv_image.shape[:2]
     font = cv2.FONT_HERSHEY_SIMPLEX
@@ -84,6 +99,7 @@ class image_converter:
 
 def main(args):
   rospy.init_node('image_converter', anonymous=True)
+
   ic = image_converter()
   try:
     rospy.spin()

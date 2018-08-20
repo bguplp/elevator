@@ -19,7 +19,7 @@ class nav_goal:
         # posfile = open("pos.txt", "r")
         # str = posfile.read()
         # posfile.close()
-        self.list = ["4 2 6.28", "4 7.7 3.14"]
+        self.list = ["17.5 -2 1.57", "17.5 2 0", "23 2 4.72", "23 -1 3.14"]
 
     def initRospy(self):
         rospy.init_node('nav_goal_node', anonymous=True)
