@@ -29,12 +29,12 @@ def target_move(x, y, z, frame_id):
 
     # build goal
     goal = SimpleTargetGoal()
-    goal.frame_id = frame_id # "/base_footprint" "/head_pan_link"
+    goal.frame_id = frame_id # "/base_footprint" "/head_tilt_link" "/wrist_link"
 
     # set target coordinates
-    goal.x = x  # 0.5
-    goal.y = y  # 0.271
-    goal.z = z  # 0.253
+    goal.x = x  # 0.5 => 0.555
+    goal.y = y  # 0.271 => 0.271
+    goal.z = z  # 0.253 => -0.8535
 
     # send goal to action server
     target_client.send_goal(goal, target_done_callback, target_active_callback, target_feedback_callback)
