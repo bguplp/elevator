@@ -3,12 +3,10 @@ import numpy as np
 import sys
 import rospkg
 
-rospack = rospkg.RosPack()
-button_path = rospack.get_path('elevator')+"/img/button_sim.png"
-
 class Button_finder:
 
-    def __init__(self, img_rgb):
+    def __init__(self, img_rgb, button_img):
+        self.button_path = button_img
         self.img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
         self.w = -1
         self.h = -1
@@ -19,10 +17,10 @@ class Button_finder:
         # threshold, \
         # button_location, \
         # button_height, \
-        # button_width
+        # button_width =
         ans = 0, -1, (-1,-1), -1, -1
 
-        template = cv2.imread(button_path, 0)
+        template = cv2.imread(self.button_path, 0)
         origin_w, origin_h = template.shape[::-1]
         scale = scale_max
         curr_scale = scale_max

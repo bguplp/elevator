@@ -70,7 +70,7 @@ class arm_server_node(object):
             transformed_goal.pose.orientation.z = 0
             transformed_goal.pose.orientation.w = 0
             self.group.set_pose_target(transformed_goal)
-            print("transformed_goal: {}".format(transformed_goal))
+            # print("transformed_goal: {}".format(transformed_goal))
             plan = self.group.plan()
             self.group.execute(plan)
 

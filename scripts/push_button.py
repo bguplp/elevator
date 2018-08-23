@@ -4,7 +4,7 @@ import rospy
 from std_msgs.msg import Float64
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Range
-
+import move_arm
 
 class push_button:
 
@@ -14,7 +14,7 @@ class push_button:
         self.urf_sub = rospy.Subscriber("/URF/front", Range, self.urf_callback)
         self.range = 0
         self.status = 0
-        self.move = [self.move_align, self.move_range, self.move_torso]
+        self.move = [self.move_align, self.move_range, self.move_torso, self.push]
 
     def urf_callback(self, data):
         self.range = "%.4f" % data.range
@@ -29,8 +29,8 @@ class push_button:
             self.status = 1
             print("aligned!!")
 
-    def move_range(self):
-        if float(self.range) > 0.5:
+    def move_range(self, x, w):
+        if float(self.range) > 0.4:
             print("range = {}".format(self.range))
             twist = Twist()
             twist.linear.x = 0.1 * float(self.range)
@@ -39,5 +39,17 @@ class push_button:
             print("in range!")
             self.status = 2
 
-    def move_torso(self):
+    def move_torso(self, x, w):
+        rospy.sleep(2)
         print("torso")
+        self.torso_pub.publish(0.1)
+        rospy.sleep(2)
+        self.status = 3
+
+    def push(self, x, w):
+        print("init push!!!")
+        move_arm.target_move(0.05, 0, 0, "/wrist_link")
+        rospy.sleep(3)
+        move_arm.target_move(-0.05, 0, 0, "/wrist_link")
+        rospy.sleep(3)
+        self.status = 9

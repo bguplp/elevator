@@ -1,13 +1,12 @@
 <?xml version="1.0"?>
 <!--USAGE
 full demo:
-roslaunch elevator elevator.launch kinect:=true softkinetic:=true lidar:=true amcl:=true have_map:=true map:="`rospack find elevator`/maps/elevator.yaml" gazebo:=true world_name:="`rospack find elevator`/worlds/elevator.world" move_base:=true  moveit:=true x:=1 y:=-2
+roslaunch elevator elevator.launch gazebo:=true x:=1 y:=-2
 
 rosrun rviz rviz -d `rospack find armadillo2_navigation`/rviz/amcl.rviz
 
 only_elevator:
-roslaunch elevator elevator.launch kinect:=true softkinetic:=true lidar:=true amcl:=true have_map:=true map:="`rospack find elevator`/maps/only_elevator.yaml" gazebo:=true world_name:="`rospack find elevator`/worlds/only_elevator.world" move_base:=true  moveit:=true
-
+roslaunch elevator elevator.launch gazebo:=true Y:=0.3
 
 roslaunch elevator arm_server.launch
 
@@ -17,23 +16,24 @@ roslaunch elevator arm_client.launch
 
 <launch>
 
+
   <!--common settings for armadillo2-->
   <arg name="gazebo" default="false" doc="execute armadillo2 inside gazebo sim"/>
-  <arg name="world_name" default="worlds/empty.world"/>
+  <arg name="world_name" default="$(find elevator)/worlds/only_elevator.world"/>
   <arg name="x" default="0.0"/>
   <arg name="y" default="0.0"/>
   <arg name="z" default="0.0"/>
   <arg name="Y" default="0.0" />
-  <arg name="moveit" default="false"/>
-  <arg name="softkinetic" default="false"/>
+  <arg name="moveit" default="true"/>
+  <arg name="softkinetic" default="true"/>
   <arg name="kinect" default="false"/>
-  <arg name="lidar" default="false"/>
+  <arg name="lidar" default="true"/>
   <arg name="gmapping" default="false"/>
   <arg name="hector_slam" default="false"/>
-  <arg name="amcl" default="false"/>
-  <arg name="have_map" default="false" doc="set to true to use pre-saved map"/>
-  <arg name="map" default="map.yaml" doc="pre-saved map path"/>
-  <arg name="move_base" default="false"/>
+  <arg name="amcl" default="true"/>
+  <arg name="have_map" default="true" doc="set to true to use pre-saved map"/>
+  <arg name="map" default="$(find elevator)/maps/only_elevator.yaml" doc="pre-saved map path"/>
+  <arg name="move_base" default="true"/>
   <arg name="robot_localization" default="false"/>
   <arg name="teleop" default="false" doc="allow armadillo2 joy teleop"/>
 

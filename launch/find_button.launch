@@ -1,6 +1,12 @@
 <?xml version="1.0"?>
 
 <launch>
-    <node name="image_converter" pkg="elevator" type="detect_button.py"
-       output="screen"></node>
+
+  <!--settings for elevator-->
+  <arg name="button_img" default="$(find elevator)/img/button_sim.png" doc="path to button image"/>
+
+  <node name="image_converter" pkg="elevator" type="detect_button.py" output="screen">
+    <param name="button_img" value="$(arg button_img)"/>
+  </node>
+
 </launch>
