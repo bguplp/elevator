@@ -15,6 +15,10 @@ class arm_server_node(object):
     _result = elevator.msg.SimpleTargetResult()
 
     def __init__(self, name):
+        # wait for moveit
+        while not "/move_group/result" in dict(rospy.get_published_topics()).keys():
+            rospy.sleep(2)
+
         self.group = MoveGroupCommander("arm")
         self.group.set_start_state_to_current_state()
         self.group.set_planner_id("RRTConnectkConfigDefault")
@@ -24,7 +28,6 @@ class arm_server_node(object):
         self.group.set_planning_time(5)
         self.group.set_goal_position_tolerance(0.01)
         self.group.set_goal_orientation_tolerance(0.02)
-        # self.group.set_end_effector_link("wrist_link")
 
         self.tf_listener = TransformListener()
 
@@ -32,6 +35,7 @@ class arm_server_node(object):
         self._as = actionlib.SimpleActionServer(self._action_name, elevator.msg.SimpleTargetAction,
                                                 execute_cb=self.execute_cb, auto_start=False)
         self._as.start()
+        print("\033[1;32;40m[elevator]: READY\033[0m")
 
     def execute_cb(self, goal):
 

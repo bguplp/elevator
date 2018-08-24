@@ -23,7 +23,7 @@ def target_feedback_callback(feedback):
 def target_move(x, y, z, frame_id):
     target_client = actionlib.SimpleActionClient('simple_target', SimpleTargetAction)
 
-    rospy.loginfo("[target_client]: waiting for pick_server...")
+    rospy.loginfo("[target_client]: waiting for target_server...")
     target_client.wait_for_server()
     rospy.loginfo("[target_client]: ready")
 

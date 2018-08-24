@@ -260,10 +260,10 @@
       <static>1</static>
     </model>
     <state world_name='default'>
-      <sim_time>280 685000000</sim_time>
-      <real_time>147 312887616</real_time>
-      <wall_time>1534700613 190665096</wall_time>
-      <iterations>143876</iterations>
+      <sim_time>377 158000000</sim_time>
+      <real_time>97 273693394</real_time>
+      <wall_time>1535114208 955323751</wall_time>
+      <iterations>96473</iterations>
       <model name='8m_cube_wall'>
         <pose frame=''>1.64088 -0.013591 0 0 -0 0</pose>
         <scale>1 1 1</scale>
@@ -292,8 +292,18 @@
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
+      <model name='elevator_door'>
+        <pose frame=''>0.964231 1.06496 0 0 -0 1.55716</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose frame=''>1.39441 1.14582 0.450416 0 -0 1.55716</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
       <model name='elevator_shaft'>
-        <pose frame=''>2.38191 -0.582252 0 0 0 -1.56913</pose>
+        <pose frame=''>2.38191 -0.582251 0 0 0 -1.56913</pose>
         <scale>1 1 1</scale>
         <link name='buttons_link'>
           <pose frame=''>1.3484 -0.021575 1.29659 0 0 -1.56913</pose>
@@ -336,7 +346,7 @@
     </state>
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose frame=''>-2.41271 -0.085781 4.53269 0 0.899643 -0.047805</pose>
+        <pose frame=''>-1.62619 -1.26539 3.54477 0 0.735643 0.39219</pose>
         <view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
       </camera>
@@ -929,6 +939,108 @@
       <static>1</static>
       <allow_auto_disable>1</allow_auto_disable>
       <pose frame=''>2.74355 -0.243494 0 0 -0 0</pose>
+    </model>
+    <model name='elevator_door'>
+      <link name='link'>
+        <pose frame=''>0.086726 -0.429033 0.450416 0 -0 0</pose>
+        <inertial>
+          <mass>1</mass>
+          <inertia>
+            <ixx>0.166667</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.166667</iyy>
+            <iyz>0</iyz>
+            <izz>0.166667</izz>
+          </inertia>
+          <pose frame=''>0 0 0.5 0 -0 0</pose>
+        </inertial>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>1.8 0.05 2</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://elevator_door/materials/scripts</uri>
+              <uri>model://elevator_door/materials/textures</uri>
+              <name>Elevator_door/Picture</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
+          <pose frame=''>0 0 0.5 0 -0 0</pose>
+          <transparency>0</transparency>
+          <cast_shadows>1</cast_shadows>
+        </visual>
+        <collision name='collision'>
+          <laser_retro>0</laser_retro>
+          <max_contacts>10</max_contacts>
+          <pose frame=''>0 0 0.5 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>1.8 0.05 2</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>1</mu2>
+                <fdir1>0 0 0</fdir1>
+                <slip1>0</slip1>
+                <slip2>0</slip2>
+              </ode>
+              <torsional>
+                <coefficient>1</coefficient>
+                <patch_radius>0</patch_radius>
+                <surface_radius>0</surface_radius>
+                <use_patch_radius>1</use_patch_radius>
+                <ode>
+                  <slip>0</slip>
+                </ode>
+              </torsional>
+            </friction>
+            <bounce>
+              <restitution_coefficient>0</restitution_coefficient>
+              <threshold>1e+06</threshold>
+            </bounce>
+            <contact>
+              <collide_without_contact>0</collide_without_contact>
+              <collide_without_contact_bitmask>1</collide_without_contact_bitmask>
+              <collide_bitmask>1</collide_bitmask>
+              <ode>
+                <soft_cfm>0</soft_cfm>
+                <soft_erp>0.2</soft_erp>
+                <kp>1e+13</kp>
+                <kd>1</kd>
+                <max_vel>0.01</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+              <bullet>
+                <split_impulse>1</split_impulse>
+                <split_impulse_penetration_threshold>-0.01</split_impulse_penetration_threshold>
+                <soft_cfm>0</soft_cfm>
+                <soft_erp>0.2</soft_erp>
+                <kp>1e+13</kp>
+                <kd>1</kd>
+              </bullet>
+            </contact>
+          </surface>
+        </collision>
+      </link>
+      <static>1</static>
+      <allow_auto_disable>1</allow_auto_disable>
+      <pose frame=''>1.37851 1.51493 0 0 -0 0</pose>
     </model>
   </world>
 </sdf>

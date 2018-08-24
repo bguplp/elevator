@@ -16,7 +16,6 @@ roslaunch elevator arm_client.launch
 
 <launch>
 
-
   <!--common settings for armadillo2-->
   <arg name="gazebo" default="false" doc="execute armadillo2 inside gazebo sim"/>
   <arg name="world_name" default="$(find elevator)/worlds/only_elevator.world"/>
@@ -58,6 +57,11 @@ roslaunch elevator arm_client.launch
     <arg name="teleop" value="$(arg teleop)"/>
   </include>
 
-  <!-- <include file="$(find arm_server)/launch/arm_server.launch"/> -->
+  <group if="$(arg gazebo)">
+      <node name="sim_elevator" pkg="elevator" type="sim_elevator.py" output="screen"/>
+  </group>
+
+  <node name="arm_server_node" pkg="elevator" type="arm_server_node.py"
+     output="screen"></node>
 
 </launch>

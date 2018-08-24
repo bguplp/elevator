@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+
+<launch>
+  <node name="sim_elevator" pkg="elevator" type="sim_elevator.py" output="screen"/>
+</launch>

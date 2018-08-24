@@ -4,9 +4,16 @@
 
   <!--settings for elevator-->
   <arg name="button_img" default="$(find elevator)/img/button_sim.png" doc="path to button image"/>
+  <arg name="pressed_button_img" default="$(find elevator)/img/button_sim_pressed.png" doc="path to pressed button image"/>
+  <arg name="press_offset_x" default="0.75" doc="offset from button_img to left corner to pushing spot"/>
+  <arg name="press_offset_y" default="0.0" doc="offset from button_img to left corner to pushing spot"/>
+
 
   <node name="image_converter" pkg="elevator" type="detect_button.py" output="screen">
     <param name="button_img" value="$(arg button_img)"/>
+    <param name="pressed_button_img" value="$(arg pressed_button_img)"/>
+    <param name="press_offset_x" value="$(arg press_offset_x)"/>
+    <param name="press_offset_y" value="$(arg press_offset_y)"/>
   </node>
 
 </launch>
