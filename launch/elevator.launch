@@ -8,9 +8,7 @@ rosrun rviz rviz -d `rospack find armadillo2_navigation`/rviz/amcl.rviz
 only_elevator:
 roslaunch elevator elevator.launch gazebo:=true Y:=0.3
 
-roslaunch elevator arm_server.launch
-
-roslaunch elevator arm_client.launch
+rosrun rviz rviz -d `rospack find armadillo2_navigation`/rviz/amcl.rviz
 
 -->
 

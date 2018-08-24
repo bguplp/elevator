@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <!--
+  roslaunch armadillo2 armadillo2.launch lidar:=true hector_slam:=true gazebo:=true world_name:="`rospack find elevator`/worlds/mapping.world"
+
+  rosrun rviz rviz -d `rospack find armadillo2_navigation`/rviz/hector_slam.rviz
+  -->
+
+  <!--settings for nav-->
+  <arg name="point_seq" default="[1, 3, 0, 4, 4, 0, 4, -1, 0, 0, 0, 0]"/>
+  <arg name="yaw_seq" default="[0, 270, 180, 0]"/>
+
+  <node name="move_base_client" pkg="elevator" type="nav_client.py" output="screen">
+    <rosparam param="point_seq" subst_value="True">$(arg point_seq)</rosparam>
+    <rosparam param="yaw_seq" subst_value="True">$(arg yaw_seq)</rosparam>
+  </node>
+
+</launch>
