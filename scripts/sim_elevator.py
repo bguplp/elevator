@@ -102,12 +102,12 @@ class sim_elevator:
             panel_pose.orientation = data.pose[panel_idx].orientation
             self.spawn_model("panel_pressed", panel_pose)
             rospy.loginfo("[sim_elevator_node]: pressed elevator button")
-            # open door after 10 seconds
-            rospy.sleep(10)
+            # open door after 15 seconds
+            rospy.sleep(15)
             self.del_model("elevator_door")
             rospy.loginfo("[sim_elevator_node]: door opened")
-            # close door after 10 seconds
-            rospy.sleep(10)
+            # close door after 30 seconds
+            rospy.sleep(30)
             door_pose = Pose()
             door_pose.position.x = 0.964234
             door_pose.position.y = 1.064952

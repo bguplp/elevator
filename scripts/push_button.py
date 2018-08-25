@@ -30,7 +30,7 @@ class push_button:
             print("aligned!")
 
     def move_range(self, x, w, torso_h):
-        if float(self.range) > 0.4:
+        if float(self.range) > 0.38:
             print("range = {}".format(self.range))
             twist = Twist()
             twist.linear.x = 0.1 * float(self.range)
@@ -40,16 +40,16 @@ class push_button:
             self.status = 2
 
     def move_torso(self, x, w, torso_h):
-        rospy.sleep(2)
+        rospy.sleep(1)
         print("torso")
         self.torso_pub.publish(torso_h)
         rospy.sleep(2)
         self.status = 3
 
     def push(self, x, w, torso_h):
-        print("init push!")
-        move_arm.target_move(0.06, 0, 0, "/wrist_link")
+        print("pushing button. distance = {}".format(float(self.range)-0.3))
+        move_arm.target_move(float(self.range)-0.31, 0, 0, "/wrist_link")
         rospy.sleep(3)
-        move_arm.target_move(-0.06, 0, 0, "/wrist_link")
-        rospy.sleep(3)
+        move_arm.target_move(-float(self.range)+0.31, 0, 0, "/wrist_link")
+        # rospy.sleep(3)
         self.status = 4

@@ -2,6 +2,7 @@
 
 import roslib
 import sys
+import os
 import math
 import rospy
 import cv2
@@ -70,14 +71,15 @@ class image_converter:
 
     elif self.pb.status == 4:
         self.pb.move_torso(0, 0, 0)
-        self.update_match(cv_image, 0.6, 1.8, self.pressed_button_img, 0.8)
+        self.update_match(cv_image, 0.6, 2, self.pressed_button_img, 0.7)
         if self.detected:
-            move_arm.target_move(0, 0, 0, "driving")
             self.pb.status = 5
-            rospy.signal_shutdown("Pressed button, finished task successfully")
+            os.system('roslaunch elevator nav_client.launch point_seq:="[2.25, 1.25, 0]" yaw_seq:="[180]"')
+            # rospy.signal_shutdown("Pressed button, finished task successfully")
+            # move_base_client([2.25, 1.25, 0], [180])
         else:
             self.pb.status = 0
-            self.mul_check = 0
+            self.mul_check = 1
             self.push_ready = 0
 
     font = cv2.FONT_HERSHEY_SIMPLEX

@@ -2,6 +2,7 @@
 
 import rospy
 import math
+import move_arm
 
 import actionlib
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
@@ -12,13 +13,20 @@ from tf.transformations import quaternion_from_euler
 
 class move_base_client:
 
-    def __init__(self):
+    def __init__(self, points ,angles):
 
         rospy.init_node('move_base_client')
 
-        points_seq = rospy.get_param('move_base_client/point_seq')
-        yaw_seq = rospy.get_param('move_base_client/yaw_seq')
+        if points == []:
+            points_seq = rospy.get_param('move_base_client/point_seq')
+            yaw_seq = rospy.get_param('move_base_client/yaw_seq')
+        else:
+            points_seq = points
+            yaw_seq = angles
 
+        # move arm to 'driving' position
+        move_arm.target_move(0, 0, 0, "driving")
+        rospy.sleep(3)
         # List of goal quaternions:
         quat_seq = list()
         # List of goal poses:
@@ -52,9 +60,7 @@ class move_base_client:
         rospy.loginfo("Goal pose %d is now being processed by the Action Server..." % (self.goal_cnt + 1))
 
     def feedback_cb(self, feedback):
-        # To print current pose at each feedback:
-        # rospy.loginfo("Feedback for goal "+str(self.goal_cnt)+": "+str(feedback))
-        rospy.loginfo("Feedback for goal pose %d received" % (self.goal_cnt + 1))
+        rospy.loginfo("going to pose %d.\ncurrent location: (%.2f, %.2f)" % (self.goal_cnt + 1, feedback.base_position.pose.position.x, feedback.base_position.pose.position.y))
 
     def done_cb(self, status, result):
         self.goal_cnt += 1
@@ -103,6 +109,6 @@ class move_base_client:
 
 if __name__ == '__main__':
     try:
-        move_base_client()
+        move_base_client([],[])
     except rospy.ROSInterruptException:
         rospy.loginfo("Navigation finished.")
