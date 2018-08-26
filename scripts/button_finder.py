@@ -37,8 +37,8 @@ class Button_finder:
                 ans = curr_match
                 curr_scale = scale
             scale -= 0.1
-        if curr_match[0] == 0:
-            print("No match was found")
+        # if curr_match[0] == 0:
+        #     print("No match was found")
         return curr_scale, ans
 
 

@@ -70,28 +70,15 @@ class move_base_client:
 
         if status == 3:
             rospy.loginfo("Goal pose %d reached" % self.goal_cnt)
-            if self.goal_cnt < len(self.pose_seq):
-                next_goal = MoveBaseGoal()
-                next_goal.target_pose.header.frame_id = "map"
-                next_goal.target_pose.header.stamp = rospy.Time.now()
-                next_goal.target_pose.pose = self.pose_seq[self.goal_cnt]
-                rospy.loginfo("Sending goal pose %d to Action Server" % (self.goal_cnt + 1))
-                rospy.loginfo(str(self.pose_seq[self.goal_cnt]))
-                self.client.send_goal(next_goal, self.done_cb, self.active_cb, self.feedback_cb)
-            else:
-                rospy.loginfo("Final goal pose reached!")
-                rospy.signal_shutdown("Final goal pose reached!")
-                return
+            self.next_goal()
 
         if status == 4:
             rospy.loginfo("Goal pose %d was aborted by the Action Server" % self.goal_cnt)
-            # rospy.signal_shutdown("Goal pose %d aborted, shutting down!" % self.goal_cnt)
-            return
+            self.next_goal()
 
         if status == 5:
             rospy.loginfo("Goal pose %d has been rejected by the Action Server" % self.goal_cnt)
-            # rospy.signal_shutdown("Goal pose %d rejected, shutting down!" % self.goal_cnt)
-            return
+            self.next_goal()
 
         if status == 8:
             rospy.loginfo("Goal pose %d received a cancel request before it started executing, successfully cancelled!" % self.goal_cnt)
@@ -106,6 +93,19 @@ class move_base_client:
         self.client.send_goal(goal, self.done_cb, self.active_cb, self.feedback_cb)
         rospy.spin()
 
+    def next_goal(self):
+        if self.goal_cnt < len(self.pose_seq):
+            next_goal = MoveBaseGoal()
+            next_goal.target_pose.header.frame_id = "map"
+            next_goal.target_pose.header.stamp = rospy.Time.now()
+            next_goal.target_pose.pose = self.pose_seq[self.goal_cnt]
+            rospy.loginfo("Sending goal pose %d to Action Server" % (self.goal_cnt + 1))
+            rospy.loginfo(str(self.pose_seq[self.goal_cnt]))
+            self.client.send_goal(next_goal, self.done_cb, self.active_cb, self.feedback_cb)
+        else:
+            rospy.loginfo("Final goal pose reached!")
+            rospy.signal_shutdown("Final goal pose reached!")
+            return
 
 if __name__ == '__main__':
     try:

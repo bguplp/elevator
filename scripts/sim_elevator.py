@@ -107,7 +107,7 @@ class sim_elevator:
             self.del_model("elevator_door")
             rospy.loginfo("[sim_elevator_node]: door opened")
             # close door after 30 seconds
-            rospy.sleep(30)
+            rospy.sleep(40)
             door_pose = Pose()
             door_pose.position.x = 0.964234
             door_pose.position.y = 1.064952

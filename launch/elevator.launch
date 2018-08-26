@@ -68,7 +68,7 @@ rosrun rviz rviz -d `rospack find armadillo2_navigation`/rviz/amcl.rviz
 
   <node name="arm_server_node" pkg="elevator" type="arm_server_node.py" output="screen"/>
 
-   <node name="image_converter" pkg="elevator" type="detect_button.py" output="screen">
+   <node name="armadillo_elevator_node" pkg="elevator" type="detect_button.py" output="screen">
      <param name="button_img" value="$(arg button_img)"/>
      <param name="pressed_button_img" value="$(arg pressed_button_img)"/>
      <param name="press_offset_x" value="$(arg press_offset_x)"/>

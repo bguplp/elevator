@@ -35,7 +35,6 @@ class arm_server_node(object):
         self._as = actionlib.SimpleActionServer(self._action_name, elevator.msg.SimpleTargetAction,
                                                 execute_cb=self.execute_cb, auto_start=False)
         self._as.start()
-        print("\033[1;32;40m[elevator]: READY\033[0m")
 
     def execute_cb(self, goal):
 
@@ -55,7 +54,6 @@ class arm_server_node(object):
             self.group.set_named_target(goal.frame_id)
             named_plan = self.group.plan()
             self.group.execute(named_plan)
-
 
         else:
             rospy.loginfo('[%s]: Executing, moving gripper from (%.3f, %.3f, %.3f) to (%.3f, %.3f, %.3f)' % (
