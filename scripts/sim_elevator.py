@@ -107,14 +107,14 @@ class sim_elevator:
             self.del_model("elevator_door")
             rospy.loginfo("[sim_elevator_node]: door opened")
             # close door after 30 seconds
-            rospy.sleep(40)
-            door_pose = Pose()
-            door_pose.position.x = 0.964234
-            door_pose.position.y = 1.064952
-            door_pose.position.z = 0
-            door_pose.orientation = data.pose[door_idx].orientation
-            self.spawn_model("elevator_door", door_pose)
-            rospy.loginfo("[sim_elevator_node]: door closed")
+            # rospy.sleep(40)
+            # door_pose = Pose()
+            # door_pose.position.x = 0.964234
+            # door_pose.position.y = 1.064952
+            # door_pose.position.z = 0
+            # door_pose.orientation = data.pose[door_idx].orientation
+            # self.spawn_model("elevator_door", door_pose)
+            # rospy.loginfo("[sim_elevator_node]: door closed")
 
 if __name__ == '__main__':
     rospy.init_node('sim_elevator_node', anonymous=True)

@@ -29,6 +29,7 @@ class armadillo_elevator_node:
         self.pb = push_button()
         self.push_ready = 0
         self.counter = 0
+        self.inside_elevator = 0
 
         self.move_control = [self.move_control0, self.move_control1, self.move_control2,
                              self.move_control3, self.move_control4, self.move_control5, self.move_control6,
@@ -37,7 +38,7 @@ class armadillo_elevator_node:
                            "move towards button", "move towards button", "adjust height to button",
                            "pushing button", "lower robot", "check if pressed", "check if pressed",
                            "going into elevator"]
-                           
+
         # move arm to 'button' position
         move_arm.target_move(0, 0, 0, "button")
         rospy.sleep(5)
@@ -156,8 +157,23 @@ class armadillo_elevator_node:
 
     def move_control10(self, cv_image, img_width):
         self.pb.status = 11
-        os.system('roslaunch elevator nav_client.launch point_seq:="[2.25, 1.25, 0]" yaw_seq:="[180]"')
-        print("\033[1;32;40m[elevator]: READY\033[0m")
+        if self.inside_elevator:
+            os.system('roslaunch elevator nav_client.launch point_seq:="[0, 0, 0]" yaw_seq:="[180]"')
+            print("\033[1;32;40mFinished Task Successfully\033[0m")
+            rospy.signal_shutdown("Finished Task Successfully")
+            return
+
+        # get inside the elevator
+        os.system('roslaunch elevator nav_client.launch point_seq:="[0.5, 0, 0, 1.75, 1, 0]" yaw_seq:="[0, 90]"')
+        self.inside_elevator = 1
+        # move arm to 'button' position
+        move_arm.target_move(0, 0, 0, "button")
+        rospy.sleep(5)
+        # push inner button
+        self.button_img = rospy.get_param('~inner_button_img') # TODO change img
+        self.pressed_button_img = rospy.get_param('~inner_button_img') # TODO change img
+        self.pb.status = 0
+        self.push_ready = 0
 
 
 def main(args):

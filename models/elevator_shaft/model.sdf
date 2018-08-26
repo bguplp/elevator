@@ -17,21 +17,6 @@
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
-      <visual name='floor1_visual'>
-        <pose frame=''>1.19 0 2 0 -0 0</pose>
-        <geometry>
-          <box>
-            <size>0.12 2 0.2</size>
-          </box>
-        </geometry>
-        <material>
-          <shader type='pixel'>
-            <normal_map>__default__</normal_map>
-          </shader>
-        </material>
-        <cast_shadows>1</cast_shadows>
-        <transparency>0</transparency>
-      </visual>
       <visual name='shaft_wall3_visual'>
         <pose frame=''>-1.25 0 2.4774 0 -0 0</pose>
         <geometry>
@@ -77,13 +62,28 @@
         <cast_shadows>1</cast_shadows>
         <transparency>0</transparency>
       </visual>
-      <collision name='shaft_wall2_collision'>
-        <laser_retro>0</laser_retro>
-        <max_contacts>10</max_contacts>
-        <pose frame=''>0 -1 2.4774 0 -0 0</pose>
+      <visual name='floor1_visual'>
+        <pose frame=''>1.19 0 2 0 -0 0</pose>
         <geometry>
           <box>
-            <size>2.5 0.15 4.95479</size>
+            <size>0.12 2 0.2</size>
+          </box>
+        </geometry>
+        <material>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+        </material>
+        <cast_shadows>1</cast_shadows>
+        <transparency>0</transparency>
+      </visual>
+      <collision name='floor1_collision'>
+        <laser_retro>0</laser_retro>
+        <max_contacts>10</max_contacts>
+        <pose frame=''>1.19 0 2 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.12 2 0.2</size>
           </box>
         </geometry>
         <surface>
@@ -187,6 +187,61 @@
           </contact>
         </surface>
       </collision>
+      <collision name='shaft_wall2_collision'>
+        <laser_retro>0</laser_retro>
+        <max_contacts>10</max_contacts>
+        <pose frame=''>0 -1 2.4774 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>2.5 0.15 4.95479</size>
+          </box>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>1</mu>
+              <mu2>1</mu2>
+              <fdir1>0 0 0</fdir1>
+              <slip1>0</slip1>
+              <slip2>0</slip2>
+            </ode>
+            <torsional>
+              <coefficient>1</coefficient>
+              <patch_radius>0</patch_radius>
+              <surface_radius>0</surface_radius>
+              <use_patch_radius>1</use_patch_radius>
+              <ode>
+                <slip>0</slip>
+              </ode>
+            </torsional>
+          </friction>
+          <bounce>
+            <restitution_coefficient>0</restitution_coefficient>
+            <threshold>1e+06</threshold>
+          </bounce>
+          <contact>
+            <collide_without_contact>0</collide_without_contact>
+            <collide_without_contact_bitmask>1</collide_without_contact_bitmask>
+            <collide_bitmask>1</collide_bitmask>
+            <ode>
+              <soft_cfm>0</soft_cfm>
+              <soft_erp>0.2</soft_erp>
+              <kp>1e+13</kp>
+              <kd>1</kd>
+              <max_vel>0.01</max_vel>
+              <min_depth>0</min_depth>
+            </ode>
+            <bullet>
+              <split_impulse>1</split_impulse>
+              <split_impulse_penetration_threshold>-0.01</split_impulse_penetration_threshold>
+              <soft_cfm>0</soft_cfm>
+              <soft_erp>0.2</soft_erp>
+              <kp>1e+13</kp>
+              <kd>1</kd>
+            </bullet>
+          </contact>
+        </surface>
+      </collision>
       <collision name='shaft_wall1_collision'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
@@ -242,64 +297,9 @@
           </contact>
         </surface>
       </collision>
-      <collision name='floor1_collision'>
-        <laser_retro>0</laser_retro>
-        <max_contacts>10</max_contacts>
-        <pose frame=''>1.19 0 2 0 -0 0</pose>
-        <geometry>
-          <box>
-            <size>0.12 2 0.2</size>
-          </box>
-        </geometry>
-        <surface>
-          <friction>
-            <ode>
-              <mu>1</mu>
-              <mu2>1</mu2>
-              <fdir1>0 0 0</fdir1>
-              <slip1>0</slip1>
-              <slip2>0</slip2>
-            </ode>
-            <torsional>
-              <coefficient>1</coefficient>
-              <patch_radius>0</patch_radius>
-              <surface_radius>0</surface_radius>
-              <use_patch_radius>1</use_patch_radius>
-              <ode>
-                <slip>0</slip>
-              </ode>
-            </torsional>
-          </friction>
-          <bounce>
-            <restitution_coefficient>0</restitution_coefficient>
-            <threshold>1e+06</threshold>
-          </bounce>
-          <contact>
-            <collide_without_contact>0</collide_without_contact>
-            <collide_without_contact_bitmask>1</collide_without_contact_bitmask>
-            <collide_bitmask>1</collide_bitmask>
-            <ode>
-              <soft_cfm>0</soft_cfm>
-              <soft_erp>0.2</soft_erp>
-              <kp>1e+13</kp>
-              <kd>1</kd>
-              <max_vel>0.01</max_vel>
-              <min_depth>0</min_depth>
-            </ode>
-            <bullet>
-              <split_impulse>1</split_impulse>
-              <split_impulse_penetration_threshold>-0.01</split_impulse_penetration_threshold>
-              <soft_cfm>0</soft_cfm>
-              <soft_erp>0.2</soft_erp>
-              <kp>1e+13</kp>
-              <kd>1</kd>
-            </bullet>
-          </contact>
-        </surface>
-      </collision>
     </link>
     <link name='buttons_link'>
-      <pose frame=''>-3.01201 -1.03258 1.00951 0 -0 0</pose>
+      <pose frame=''>-0.5624 -1.03258 1.29659 0 -0 0</pose>
       <inertial>
         <mass>1</mass>
         <inertia>
@@ -315,10 +315,10 @@
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
       <visual name='visual'>
-        <pose frame=''>0 0 0 0 -0 0</pose>
+        <pose frame=''>0 0 -0.08 0 -0 0</pose>
         <geometry>
           <box>
-            <size>0.05 0.01 0.1</size>
+            <size>0.09 0.01 0.36</size>
           </box>
         </geometry>
         <material>
@@ -327,7 +327,9 @@
             <uri>model://elevator_shaft/materials/textures</uri>
             <name>Up_down/Diffuse</name>
           </script>
-          <shader type='pixel'/>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
           <ambient>1 1 1 1</ambient>
           <diffuse>1 1 1 1</diffuse>
           <specular>0 0 0 1</specular>
@@ -339,10 +341,10 @@
       <collision name='collision'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose frame=''>0 0 0 0 -0 0</pose>
+        <pose frame=''>0 0 -0.08 0 -0 0</pose>
         <geometry>
           <box>
-            <size>0.05 0.01 0.1</size>
+            <size>0.09 0.01 0.36</size>
           </box>
         </geometry>
         <surface>
@@ -393,7 +395,7 @@
       </collision>
     </link>
     <link name='buttons_panel'>
-      <pose frame=''>-0.800245 -0.19994 1.00951 0 -0 0</pose>
+      <pose frame=''>-2.64739 -0.78766 1.00951 0 -0 0</pose>
       <inertial>
         <mass>1</mass>
         <inertia>
@@ -422,13 +424,13 @@
             <uri>model://elevator_shaft/materials/textures</uri>
             <name>Buttons_panel/Picture</name>
           </script>
-          <!-- <shader type='pixel'>
+          <shader type='pixel'>
             <normal_map>__default__</normal_map>
           </shader>
           <ambient>1 1 1 1</ambient>
           <diffuse>1 1 1 1</diffuse>
           <specular>0 0 0 1</specular>
-          <emissive>0 0 0 1</emissive> -->
+          <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
@@ -439,7 +441,7 @@
         <pose frame=''>0 0 0 0 -0 1.57</pose>
         <geometry>
           <box>
-            <size>0.05 0.01 0.1</size>
+            <size>0.2 0.01 0.4</size>
           </box>
         </geometry>
         <surface>
@@ -490,7 +492,7 @@
       </collision>
     </link>
     <link name='link_0'>
-      <pose frame=''>-3.29875 -0.977907 1.0001 0 -0 0</pose>
+      <pose frame=''>-0.562882 -0.977907 1.0001 0 -0 0</pose>
       <inertial>
         <mass>1</mass>
         <inertia>
@@ -509,7 +511,7 @@
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
           <box>
-            <size>1 0.1 2</size>
+            <size>0.2 0.1 2</size>
           </box>
         </geometry>
         <material>
@@ -535,7 +537,7 @@
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
           <box>
-            <size>1 0.1 2</size>
+            <size>0.2 0.1 2</size>
           </box>
         </geometry>
         <surface>
