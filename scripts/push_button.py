@@ -46,8 +46,7 @@ class push_button:
 
     def push(self):
         print("pushing button. distance = {}".format(float(self.range)-0.3))
-        move_arm.target_move(float(self.range)-0.328, 0, 0, "/wrist_link")
-        rospy.sleep(3)
-        move_arm.target_move(-float(self.range)+0.328, 0, 0, "/wrist_link")
-        # rospy.sleep(3)
+        move_arm.target_move(float(self.range)-0.32, 0, 0, "/wrist_link")
+        rospy.sleep(1)
+        move_arm.target_move(-float(self.range)+0.32, 0, 0, "/wrist_link")
         self.status += 1

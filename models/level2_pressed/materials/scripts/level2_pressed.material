@@ -1,4 +1,4 @@
-material Buttons_panel/Picture
+material Level2_pressed/Picture
 {
   technique
   {
@@ -6,7 +6,7 @@ material Buttons_panel/Picture
     {
       texture_unit
       {
-        texture inner_panel.png
+        texture level2_pressed.png
       }
     }
   }

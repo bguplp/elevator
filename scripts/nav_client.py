@@ -13,11 +13,11 @@ from tf.transformations import quaternion_from_euler
 
 class move_base_client:
 
-    def __init__(self, points ,angles):
+    def __init__(self, points, angles):
 
         rospy.init_node('move_base_client')
 
-        if points == []:
+        if not points:
             points_seq = rospy.get_param('move_base_client/point_seq')
             yaw_seq = rospy.get_param('move_base_client/yaw_seq')
         else:
@@ -107,8 +107,9 @@ class move_base_client:
             rospy.signal_shutdown("Final goal pose reached!")
             return
 
+
 if __name__ == '__main__':
     try:
-        move_base_client([],[])
+        move_base_client([], [])
     except rospy.ROSInterruptException:
         rospy.loginfo("Navigation finished.")

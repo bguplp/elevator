@@ -4,11 +4,12 @@ import rospy
 import actionlib
 from arm_server.msg import SimpleTargetAction, SimpleTargetGoal
 
+
 # Called once when the goal completes
 def target_done_callback(state, result):
     rospy.loginfo("[target_client]: finished in state [%d]", state)
     rospy.loginfo("[target_client]: answer - x: %f, y: %f, z: %f", result.x, result.y, result.z)
-    # shutdown ros
+
 
 # Called once when the goal becomes active
 def target_active_callback():
@@ -20,6 +21,7 @@ def target_feedback_callback(feedback):
     rospy.loginfo("[target_client]: feedback - x: %f, y: %f, z: %f, distance: %f",
                   feedback.x, feedback.y, feedback.z, feedback.distance)
 
+
 def target_move(x, y, z, frame_id):
     target_client = actionlib.SimpleActionClient('simple_target', SimpleTargetAction)
 
@@ -29,15 +31,16 @@ def target_move(x, y, z, frame_id):
 
     # build goal
     goal = SimpleTargetGoal()
-    goal.frame_id = frame_id # "/base_footprint" "/head_tilt_link" "/wrist_link"
+    goal.frame_id = frame_id  # "/base_footprint" "/head_tilt_link" "/wrist_link"
 
     # set target coordinates
-    goal.x = x  # 0.5 => 0.555
-    goal.y = y  # 0.271 => 0.271
-    goal.z = z  # 0.253 => -0.8535
+    goal.x = x
+    goal.y = y
+    goal.z = z
 
     # send goal to action server
     target_client.send_goal(goal, target_done_callback, target_active_callback, target_feedback_callback)
+
 
 if __name__ == '__main__':
     rospy.init_node('client_demo_node')

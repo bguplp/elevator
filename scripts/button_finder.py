@@ -24,7 +24,7 @@ class Button_finder:
         scale = scale_max
         curr_scale = scale_max
 
-        while(scale >= scale_min):
+        while scale >= scale_min:
             scaled_template = cv2.resize(template, (int(scale*origin_w),int(scale*origin_h)))
             self.w, self.h = scaled_template.shape[::-1]
             self.res = cv2.matchTemplate(self.img_gray,scaled_template,cv2.TM_CCOEFF_NORMED)
@@ -41,23 +41,20 @@ class Button_finder:
         #     print("No match was found")
         return curr_scale, ans
 
-
     def find_match(self, threshold, min_threshold):
         """
         Args:
             threshold (float): the lower bound of certainty for a match
-            res (Map of comparison results): output of cv2.matchTemplate
-            w,h (int,int): wanted result size
-            img_rgb: given img
+            min_threshold (float): threshold must be bigger than min_threshold
 
         Returns:
-            print 'No match was found' if threshold < 0.7
-            else: display best estimated match's location with the highest threshold
+            return the best estimated match's location with the highest threshold
+            if no match was found, return (0, -1, (-1, -1), -1, -1)
         """
         if threshold < min_threshold or threshold > 1:
             return 0, -1, (-1, -1), -1, -1
 
-        loc = np.where( self.res >= threshold)
+        loc = np.where(self.res >= threshold)
         pts = zip(*loc[::-1])
         if not len(pts):
             if threshold >= 0.7:
@@ -65,6 +62,5 @@ class Button_finder:
             else:
                 return 0, -1, (-1, -1), -1, -1
         else:
-            # print("number of points: {}".format(len(pts)))
-            # print("threshold: {}".format(threshold))
+
             return 1, threshold, pts[0], self.h, self.w
