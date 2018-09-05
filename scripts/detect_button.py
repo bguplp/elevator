@@ -143,7 +143,9 @@ class armadillo_elevator_node:
             self.pb.status = 0
 
     def move_control5(self, cv_image, img_width, img_height):
-        torso_h = (self.button_location[1] + self.button_height / 2) / float(img_height) / 5 + 0.01
+        # print("\033[1;32;40mTORSO: {}\033[0m".format(1 - (self.button_location[1] + self.button_height / 2) / float(img_height)))
+        # print("\033[1;32;40mTORSO img_height = {}\033[0m".format(img_height))
+        torso_h = (1 - (self.button_location[1] + self.button_height / 2) / float(img_height))/5
         print("torso height = {}".format(torso_h))
         self.pb.move_torso(torso_h)
 
@@ -158,7 +160,7 @@ class armadillo_elevator_node:
             self.counter += 1
         else:
             self.counter = 0
-            self.update_match(cv_image, 0.8, 1.5, self.pressed_button_img, 0.9)
+            self.update_match(cv_image, 0.75, 1.5, self.pressed_button_img, 0.9)
             self.pb.status = 9
 
     def move_control9(self, cv_image, img_width, img_height):
@@ -168,7 +170,14 @@ class armadillo_elevator_node:
             self.pb.status = 0
 
     def move_control10(self, cv_image, img_width, img_height):
-        self.pb.status = 11
+
+        # if self.inside_elevator == 2:
+        #     self.counter += 1
+        #     if self.counter > 100:
+        #         self.inside_elevator = 1
+        #         self.counter = 0
+        #         self.pb.status = 11
+
         if self.inside_elevator:
             os.system('roslaunch elevator nav_client.launch point_seq:="[0, 0, 0]" yaw_seq:="[180]"')
             print("\033[1;32;40mFinished Task Successfully\033[0m")
@@ -177,15 +186,16 @@ class armadillo_elevator_node:
 
         # get inside the elevator
         os.system('roslaunch elevator nav_client.launch point_seq:="[0.5, 0, 0, 2.25, 1.25, 0]" yaw_seq:="[0, 135]"')
-        self.inside_elevator = 1
         # move arm to 'button' position
         move_arm.target_move(0, 0, 0, "button")
-        rospy.sleep(8)
         # push inner button
         self.button_img = rospy.get_param('~inner_button_img')
         self.pressed_button_img = rospy.get_param('~pressed_inner_button_img')
         self.pb.status = 0
         self.push_ready = 0
+        rospy.sleep(8)
+        # wait before detecting
+        self.inside_elevator = 2
 
     ####################################################################################################################
 

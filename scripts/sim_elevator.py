@@ -131,7 +131,7 @@ class sim_elevator:
             z2 = data.pose[self.inner_panel_idx].position.z
 
             distance = math.sqrt(math.pow(x2 - x1, 2) + math.pow(y2 - y1, 2) + math.pow(z2 - z1, 2))
-            if distance < 0.25:
+            if distance < 0.2:
                 self.inner_pressed = 1
                 panel_pose = Pose()
                 panel_pose.position.x = 1.465790
