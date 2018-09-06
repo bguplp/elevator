@@ -10,7 +10,7 @@ class push_button:
 
     def __init__(self):
         self.vel_pub = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
-        self.torso_pub = rospy.Publisher("/torso_position_controller/command", Float64, queue_size=10)
+        self.torso_pub = rospy.Publisher("/torso_effort_controller/command", Float64, queue_size=10)
         self.urf_sub = rospy.Subscriber("/URF/front", Range, self.urf_callback)
         self.range = 0
         self.status = 0
@@ -19,11 +19,16 @@ class push_button:
         self.range = "%.4f" % data.range
 
     def move_align(self, x, w):
-        X = x - w/2
-        if X > 5 or X < -5:
+        X = w/2 - x
+        if X > 15 or X < -15:
             twist = Twist()
-            twist.angular.z = -0.003*X
+            twist.angular.z = -0.06
+            # if X < 30:
+            #     twist.angular.z = X / w * 2
+            # else:
+            #     twist.angular.z = X / w / 2
             self.vel_pub.publish(twist)
+            print("X = {0}, vel = {1}".format(X, twist.angular.z))
         else:
             self.status += 1
             print("aligned!")
@@ -32,7 +37,7 @@ class push_button:
         if float(self.range) > 0.4:
             print("range = {}".format(self.range))
             twist = Twist()
-            twist.linear.x = 0.1 * float(self.range)
+            twist.linear.x = 0.05 * float(self.range)
             self.vel_pub.publish(twist)
         else:
             print("in range!")
@@ -41,7 +46,8 @@ class push_button:
     def move_torso(self, torso_h):
         rospy.sleep(1)
         self.torso_pub.publish(torso_h)
-        rospy.sleep(2)
+        # real robot takes a lot of time
+        rospy.sleep(30)
         self.status += 1
 
     def push(self):

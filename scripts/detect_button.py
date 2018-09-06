@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
 import sys
+import numpy as np
 import os
 import rospy
 import cv2
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import Image, CompressedImage
 from control_msgs.msg import GripperCommandActionGoal
 from cv_bridge import CvBridge, CvBridgeError
 from button_finder import Button_finder
@@ -52,7 +53,7 @@ class armadillo_elevator_node:
         rospy.sleep(2)
 
         self.bridge = CvBridge()
-        self.image_sub = rospy.Subscriber("/softkinetic/rgb/image_raw", Image, self.camera_callback)
+        self.image_sub = rospy.Subscriber("/intel_d435/color/image_raw/compressed", CompressedImage, self.camera_callback)
 
         # args updated by Button_finder
         self.scale = -1
@@ -68,7 +69,8 @@ class armadillo_elevator_node:
             return
 
         try:
-            cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+            np_arr = np.fromstring(data.data, np.uint8)
+            cv_image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
         except CvBridgeError as e:
             print(e)
 
@@ -101,7 +103,7 @@ class armadillo_elevator_node:
 
     def update_match(self, cv_image, scale_min, scale_max, temp_img, threshold):
         """
-        Try detecting button and update arges accordingly
+        Try detecting button and update args accordingly
         """
         bf = Button_finder(cv_image)
         self.scale, \
@@ -111,7 +113,16 @@ class armadillo_elevator_node:
          self.button_height, \
          self.button_width) = bf.find_match_multi_size(scale_min, scale_max, temp_img, threshold)
 
+
     ###########################################Dispatching for pushing button###########################################
+
+    # def move_control_debug(self, cv_image, img_width, img_height):
+    #     self.counter += 1
+    #     if self.counter > 100:
+    #         self.pb.status = 1
+    #         self.counter = 0
+    #         print("update_match")
+    #     return
 
     def move_control0(self, cv_image, img_width, img_height):
         self.update_match(cv_image, 0.2, 2.2, self.button_img, 0.7)
@@ -171,6 +182,9 @@ class armadillo_elevator_node:
 
     def move_control10(self, cv_image, img_width, img_height):
 
+        self.pb.status = 11
+        print("\033[1;32;40mFinished Task Successfully\033[0m")
+        return
         # if self.inside_elevator == 2:
         #     self.counter += 1
         #     if self.counter > 100:

@@ -25,7 +25,7 @@ class arm_server_node(object):
         self.group.set_pose_reference_frame("/base_footprint")
         self.group.set_max_velocity_scaling_factor(1)
         self.group.set_num_planning_attempts(50)
-        self.group.set_planning_time(5)
+        self.group.set_planning_time(10)
         self.group.set_goal_position_tolerance(0.01)
         self.group.set_goal_orientation_tolerance(0.02)
 

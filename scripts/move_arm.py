@@ -47,3 +47,5 @@ if __name__ == '__main__':
     rospy.loginfo("[client_demo]: started")
 
     target_move(0, 0, 0, "driving")
+    # rospy.sleep(4)
+    # target_move(0, 0, 0, "button")

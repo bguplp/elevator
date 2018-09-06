@@ -21,7 +21,6 @@ class Button_finder:
         origin_w, origin_h = template.shape[::-1]
         scale = scale_max
         curr_scale = scale_max
-
         while scale >= scale_min:
             scaled_template = cv2.resize(template, (int(scale*origin_w),int(scale*origin_h)))
             self.w, self.h = scaled_template.shape[::-1]
