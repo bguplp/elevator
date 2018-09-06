@@ -46,6 +46,9 @@ if __name__ == '__main__':
     rospy.init_node('client_demo_node')
     rospy.loginfo("[client_demo]: started")
 
+    # target_move(0.06, 0, 0, "/wrist_link")
+    # rospy.sleep(3)
+    # target_move(-0.06, 0, 0, "/wrist_link")
     target_move(0, 0, 0, "driving")
     # rospy.sleep(4)
     # target_move(0, 0, 0, "button")

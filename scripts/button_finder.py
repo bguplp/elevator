@@ -15,7 +15,7 @@ class Button_finder:
         # button_location, \
         # button_height, \
         # button_width =
-        ans = 0, -1, (-1,-1), -1, -1
+        ans = 0, -1, (-1, -1), -1, -1
 
         template = cv2.imread(temp_img, 0)
         origin_w, origin_h = template.shape[::-1]
