@@ -128,7 +128,7 @@ class armadillo_elevator_node:
     #     return
 
     def move_control0(self, cv_image, img_width, img_height):
-        self.update_match(cv_image, self.min_scale, self.max_scale, self.button_img, 0.7)
+        self.update_match(cv_image, 0.2, 2, self.button_img, 0.7)
         self.pb.status = 1
 
     def move_control1(self, cv_image, img_width, img_height):
@@ -157,7 +157,7 @@ class armadillo_elevator_node:
         else:
             self.push_ready = 1
             self.min_scale = self.scale
-            self.max_scale = self.scale + 1.8
+            self.max_scale = self.scale + 2
             self.pb.status = 0
 
     def move_control5(self, cv_image, img_width, img_height):
@@ -170,10 +170,11 @@ class armadillo_elevator_node:
 
     def move_control7(self, cv_image, img_width, img_height):
         # debugging - stop here
-        self.pb.status = 11
-        print("\033[1;32;40mDONE\033[0m")
-        return
         self.pb.move_torso(0)
+        if self.pb.ready_to_push:
+            self.pb.status = 11
+            print("\033[1;32;40mDONE\033[0m")
+            rospy.signal_shutdown("Finished Task Successfully")
 
     def move_control8(self, cv_image, img_width, img_height):
         if self.counter < 100:

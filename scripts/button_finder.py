@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+
 class Button_finder:
 
     def __init__(self, img_rgb):
@@ -22,9 +23,9 @@ class Button_finder:
         scale = scale_max
         curr_scale = scale_max
         while scale >= scale_min:
-            scaled_template = cv2.resize(template, (int(scale*origin_w),int(scale*origin_h)))
+            scaled_template = cv2.resize(template, (int(scale * origin_w), int(scale * origin_h)))
             self.w, self.h = scaled_template.shape[::-1]
-            self.res = cv2.matchTemplate(self.img_gray,scaled_template,cv2.TM_CCOEFF_NORMED)
+            self.res = cv2.matchTemplate(self.img_gray, scaled_template, cv2.TM_CCOEFF_NORMED)
             # print("scale {}".format(scale))
             curr_match = self.find_match(0.95, threshold)
 
@@ -34,8 +35,7 @@ class Button_finder:
                 ans = curr_match
                 curr_scale = scale
             scale -= 0.1
-        # if curr_match[0] == 0:
-        #     print("No match was found")
+
         return curr_scale, ans
 
     def find_match(self, threshold, min_threshold):
@@ -55,7 +55,7 @@ class Button_finder:
         pts = zip(*loc[::-1])
         if not len(pts):
             if threshold >= 0.7:
-                return self.find_match(threshold-0.005, min_threshold)
+                return self.find_match(threshold - 0.005, min_threshold)
             else:
                 return 0, -1, (-1, -1), -1, -1
         else:

@@ -20,6 +20,7 @@ class push_button:
         self.to_range = 1
         self.torso_height = 0
         self.status = 0
+        self.ready_to_push = 0
 
     def urf_callback(self, data):
         self.range = "%.4f" % data.range
@@ -72,18 +73,22 @@ class push_button:
 
     def push(self):
         # get closer than camera can see
-        if float(self.range) > 0.47:
+        if float(self.range) > 0.45:
             print("final range = {}".format(self.range))
             twist = Twist()
             twist.linear.x = 0.05 * float(self.range)
             self.vel_pub.publish(twist)
             return
 
-        print("pushing button. distance = {}".format(float(self.range)-0.32))
-        move_arm.target_move(0.06, 0, 0, "/wrist_link")
-        rospy.sleep(3)
-        move_arm.target_move(-0.06, 0, 0, "/wrist_link")
-        # move_arm.target_move(float(self.range)-0.32, 0, 0, "/wrist_link") # TODO change back
+        if not self.ready_to_push:
+            self.ready_to_push = 1
+            self.status = 0
+        print("pushing button. distance = {}".format(float(self.range)-0.38))
+        # move_arm.target_move(0.06, 0, 0, "/wrist_link")
+        # rospy.sleep(3)
+        # move_arm.target_move(-0.06, 0, 0, "/wrist_link")
         # rospy.sleep(1)
-        # move_arm.target_move(-float(self.range)+0.32, 0, 0, "/wrist_link")
-        self.status += 1
+        # # move_arm.target_move(float(self.range)-0.32, 0, 0, "/wrist_link") # TODO change back
+        # # rospy.sleep(1)
+        # # move_arm.target_move(-float(self.range)+0.32, 0, 0, "/wrist_link")
+        # self.status += 1
