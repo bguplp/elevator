@@ -53,7 +53,7 @@ class armadillo_elevator_node:
         rospy.sleep(2)
 
         self.bridge = CvBridge()
-        self.image_sub = rospy.Subscriber("/intel_d435/color/image_raw/compressed", CompressedImage, self.camera_callback)
+        self.image_sub = rospy.Subscriber("/kinect2/qhd/image_color/compressed", CompressedImage, self.camera_callback)
 
         # args updated by Button_finder
         self.scale = -1
@@ -63,8 +63,9 @@ class armadillo_elevator_node:
         self.button_height = -1
         self.button_width = -1
 
-        self.max_scale = 1
+        self.max_scale = 3
         self.min_scale = 0.2
+        self.final_align = 1
 
     def camera_callback(self, data):
         # if mission is done, do nothing
@@ -87,6 +88,8 @@ class armadillo_elevator_node:
             cv2.putText(cv_image, 'button detected', (img_width - 300, 25), font, 0.8, (0, 153, 0), 2)
             cv2.putText(cv_image, 'certainty: {}%'.format(self.threshold * 100), (img_width - 300, 50), font, 0.8,
                         (0, 153, 0), 2)
+            cv2.putText(cv_image, 'scale: {}'.format(self.scale), (img_width - 300, 75), font, 0.8, (0, 153, 0), 2)
+            # cv2.circle(cv_image, (img_width/2-100, img_height-100), 5, (255, 255, 255))
             if self.pb.status != 3:
                 cv2.rectangle(cv_image, self.button_location, (
                     self.button_location[0] + self.button_width, self.button_location[1] + self.button_height),
@@ -128,7 +131,7 @@ class armadillo_elevator_node:
     #     return
 
     def move_control0(self, cv_image, img_width, img_height):
-        self.update_match(cv_image, 0.2, 2, self.button_img, 0.7)
+        self.update_match(cv_image, self.min_scale, self.max_scale, self.button_img, 0.7)
         self.pb.status = 1
 
     def move_control1(self, cv_image, img_width, img_height):
@@ -145,20 +148,35 @@ class armadillo_elevator_node:
         self.counter += 1
         if self.counter >= 5:
             self.counter = 0
-            self.update_match(cv_image, self.scale, self.scale, self.button_img, 0.6)
+            self.update_match(cv_image, self.scale, self.scale, self.button_img, 0.7)
             self.pb.move_align(self.button_location[0] + self.button_width * self.press_offset_x, img_width)
 
     def move_control3(self, cv_image, img_width, img_height):
         self.pb.move_range()
 
     def move_control4(self, cv_image, img_width, img_height):
-        if self.push_ready:
-            self.pb.status = 5
+        # final check if aligned
+        X = img_width/2 - (self.button_location[0] + self.button_width * self.press_offset_x)
+
+        # if aligned, lift torso and press
+        if 5 > X > -5:
+            print("\033[1;33m[DEBUG]: aligned, lift torso and press\nX = {}\033[0m".format(X))
+            if self.final_align:
+                self.update_match(cv_image, self.min_scale, self.max_scale, self.button_img, 0.7)
+                self.final_align = 0
+            else:
+                self.update_match(cv_image, self.scale, self.scale, self.button_img, 0.7)
+
+            self.counter += 1
+            if self.counter >= 10:
+                self.counter = 0
+                self.pb.status = 5
+        # else align again
         else:
-            self.push_ready = 1
-            self.min_scale = self.scale
-            self.max_scale = self.scale + 2
-            self.pb.status = 0
+            print("\033[1;31m[DEBUG]: align again\nX = {}\033[0m".format(X))
+
+            self.counter = 0
+            self.pb.status = 2
 
     def move_control5(self, cv_image, img_width, img_height):
         torso_h = (1 - (self.button_location[1] + self.button_height / 2) / float(img_height))/5
@@ -166,22 +184,22 @@ class armadillo_elevator_node:
         self.pb.move_torso(torso_h)
 
     def move_control6(self, cv_image, img_width, img_height):
-        self.pb.push()
+        # self.max_scale += 1
+        self.pb.push(self.button_location[0] + self.button_width * self.press_offset_x, img_width)
 
     def move_control7(self, cv_image, img_width, img_height):
         # debugging - stop here
         self.pb.move_torso(0)
-        if self.pb.ready_to_push:
-            self.pb.status = 11
-            print("\033[1;32;40mDONE\033[0m")
-            rospy.signal_shutdown("Finished Task Successfully")
+        self.pb.status = 11
+        print("\033[1;32;40mDONE\033[0m")
+        rospy.signal_shutdown("Finished Task Successfully")
 
     def move_control8(self, cv_image, img_width, img_height):
         if self.counter < 100:
             self.counter += 1
         else:
             self.counter = 0
-            self.update_match(cv_image, 0.75, 1.5, self.pressed_button_img, 0.9)
+            self.update_match(cv_image, self.min_scale, self.max_scale, self.pressed_button_img, 0.9)
             self.pb.status = 9
 
     def move_control9(self, cv_image, img_width, img_height):
@@ -212,8 +230,12 @@ class armadillo_elevator_node:
         # push inner button
         self.button_img = rospy.get_param('~inner_button_img')
         self.pressed_button_img = rospy.get_param('~pressed_inner_button_img')
+        # reset args
         self.pb.status = 0
         self.push_ready = 0
+        self.max_scale = 3
+        self.min_scale = 0.2
+        self.final_align = 1
         rospy.sleep(8)
         # wait before detecting
         self.inside_elevator = 2

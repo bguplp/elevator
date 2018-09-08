@@ -17,10 +17,9 @@ class push_button:
         rospy.Subscriber("/torso_effort_controller/state", JointControllerState, self.torso_callback)
 
         self.range = 2
-        self.to_range = 1
         self.torso_height = 0
         self.status = 0
-        self.ready_to_push = 0
+        self.align_again = 1
 
     def urf_callback(self, data):
         self.range = "%.4f" % data.range
@@ -30,8 +29,6 @@ class push_button:
 
     def move_align(self, x, w):
         X = w/2 - x
-        print("X = {}".format(X))
-
         if X > 5 or X < -5:
             twist = Twist()
             if X < 0:
@@ -44,22 +41,16 @@ class push_button:
         else:
             self.status += 1
             print("aligned!")
-            rospy.sleep(3)
 
     def move_range(self):
-        if float(self.range) > self.to_range:
-            print("range = {}".format(self.range))
+        print("range = {}".format(self.range))
+        if float(self.range) > 0.45:
             twist = Twist()
             twist.linear.x = 0.05 * float(self.range)
             self.vel_pub.publish(twist)
         else:
-            print("range = {}".format(self.range))
-            if self.to_range <= 0.65:
-                print("in range!")
-                self.status += 1
-            else:
-                self.to_range = 0.65
-                self.status = 0
+            print("in range!")
+            self.status += 1
 
     def move_torso(self, torso_h):
         self.torso_pub.publish(torso_h)
@@ -71,24 +62,21 @@ class push_button:
         self.status += 1
         print("done moving torso")
 
-    def push(self):
+    def push(self, x, w):
+        X = w / 2 - x
+
         # get closer than camera can see
-        if float(self.range) > 0.45:
-            print("final range = {}".format(self.range))
-            twist = Twist()
-            twist.linear.x = 0.05 * float(self.range)
-            self.vel_pub.publish(twist)
+        if self.align_again:
+            self.status = 0
+            self.align_again = 0
             return
 
-        if not self.ready_to_push:
-            self.ready_to_push = 1
-            self.status = 0
-        print("pushing button. distance = {}".format(float(self.range)-0.38))
-        # move_arm.target_move(0.06, 0, 0, "/wrist_link")
-        # rospy.sleep(3)
-        # move_arm.target_move(-0.06, 0, 0, "/wrist_link")
-        # rospy.sleep(1)
+        print("pushing button. distance = {}".format(float(self.range)-0.32))
+        move_arm.target_move(0.06, 0, 0, "/wrist_link")
+        rospy.sleep(3)
+        move_arm.target_move(-0.06, 0, 0, "/wrist_link")
+        rospy.sleep(1)
         # # move_arm.target_move(float(self.range)-0.32, 0, 0, "/wrist_link") # TODO change back
         # # rospy.sleep(1)
         # # move_arm.target_move(-float(self.range)+0.32, 0, 0, "/wrist_link")
-        # self.status += 1
+        self.status += 1

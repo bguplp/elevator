@@ -49,6 +49,6 @@ if __name__ == '__main__':
     # target_move(0.06, 0, 0, "/wrist_link")
     # rospy.sleep(3)
     # target_move(-0.06, 0, 0, "/wrist_link")
-    target_move(0, 0, 0, "cobra_center")
+    target_move(0, 0, 0, "driving")
     # rospy.sleep(4)
     # target_move(0, 0, 0, "button")

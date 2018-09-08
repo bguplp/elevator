@@ -17,7 +17,7 @@ roslaunch armadillo2 armadillo2.launch moveit:=true intel_cam:=true lidar:=true 
 
 
  <!--settings for elevator-->
- <arg name="button_img" default="$(find elevator)/img/button_print.png" doc="path to button image"/>
+ <arg name="button_img" default="$(find elevator)/img/button_kinect.png" doc="path to button image"/>
  <arg name="pressed_button_img" default="$(find elevator)/img/button_sim_pressed.png" doc="path to pressed button image"/>
  <arg name="inner_button_img" default="$(find elevator)/img/level2_sim.png" doc="path to inner button image"/>
  <arg name="pressed_inner_button_img" default="$(find elevator)/img/level2_pressed_sim.png" doc="path to pressed inner button image"/>
