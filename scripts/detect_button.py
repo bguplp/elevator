@@ -5,7 +5,7 @@ import numpy as np
 import os
 import rospy
 import cv2
-from sensor_msgs.msg import Image, CompressedImage
+from sensor_msgs.msg import CompressedImage
 from control_msgs.msg import GripperCommandActionGoal
 from cv_bridge import CvBridge, CvBridgeError
 from button_finder import Button_finder
@@ -17,6 +17,7 @@ class armadillo_elevator_node:
     """
     This node is responsible for handling the elevator mission with Armadillo2 robot.
     """
+
     def __init__(self):
         # get outer button images and offsets
         self.button_img = rospy.get_param('~button_img')
@@ -24,8 +25,8 @@ class armadillo_elevator_node:
         self.press_offset_x = float(rospy.get_param('~press_offset_x'))
         self.press_offset_y = float(rospy.get_param('~press_offset_y'))
 
-        # for publishing camera view with image processing
-        self.image_pub = rospy.Publisher("image_buttons", Image, queue_size=10)
+        # # for publishing camera view with image processing
+        # self.image_pub = rospy.Publisher("image_buttons", Image, queue_size=10)
         self.gripper_pub = rospy.Publisher("/gripper_controller/gripper_cmd/goal", GripperCommandActionGoal,
                                            queue_size=10)
         # for handling movement towards and pushing buttons
@@ -48,7 +49,7 @@ class armadillo_elevator_node:
 
         # close gripper
         gc = GripperCommandActionGoal()
-        gc.goal.command.max_effort = 0.1
+        gc.goal.command.max_effort = 0.2
         self.gripper_pub.publish(gc)
         rospy.sleep(2)
 
@@ -79,33 +80,36 @@ class armadillo_elevator_node:
             print(e)
 
         img_height, img_width = cv_image.shape[:2]
+        # crop arm from kinect image
+        cv_image = cv_image[0:img_height - 150, 0:img_width - 100]
+        img_height, img_width = cv_image.shape[:2]
 
         print("STATUS: {}".format(self.status_str[self.pb.status]))
         self.move_control[self.pb.status](cv_image, img_width, img_height)
 
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        if self.detected:
-            cv2.putText(cv_image, 'button detected', (img_width - 300, 25), font, 0.8, (0, 153, 0), 2)
-            cv2.putText(cv_image, 'certainty: {}%'.format(self.threshold * 100), (img_width - 300, 50), font, 0.8,
-                        (0, 153, 0), 2)
-            cv2.putText(cv_image, 'scale: {}'.format(self.scale), (img_width - 300, 75), font, 0.8, (0, 153, 0), 2)
-            # cv2.circle(cv_image, (img_width/2-100, img_height-100), 5, (255, 255, 255))
-            if self.pb.status != 3:
-                cv2.rectangle(cv_image, self.button_location, (
-                    self.button_location[0] + self.button_width, self.button_location[1] + self.button_height),
-                              (255, 255, 0), 2)
+        # font = cv2.FONT_HERSHEY_SIMPLEX
+        # if self.detected:
+        #     cv2.putText(cv_image, 'button detected', (img_width - 300, 25), font, 0.8, (0, 153, 0), 2)
+        #     cv2.putText(cv_image, 'certainty: {}%'.format(self.threshold * 100), (img_width - 300, 50), font, 0.8,
+        #                 (0, 153, 0), 2)
+        #     cv2.putText(cv_image, 'scale: {}'.format(self.scale), (img_width - 300, 75), font, 0.8, (0, 153, 0), 2)
+        #     # cv2.circle(cv_image, (img_width/2-100, img_height-100), 5, (255, 255, 255))
+        #     if self.pb.status != 3:
+        #         cv2.rectangle(cv_image, self.button_location, (
+        #             self.button_location[0] + self.button_width, self.button_location[1] + self.button_height),
+        #                       (255, 255, 0), 2)
 
-        else:
-            cv2.putText(cv_image, 'button not detected', (img_width - 300, 25), font, 0.8, (0, 0, 255), 2)
+        # else:
+        #     cv2.putText(cv_image, 'button not detected', (img_width - 300, 25), font, 0.8, (0, 0, 255), 2)
 
-        cv2.imshow("button detector", cv_image)
-        cv2.waitKey(3)
+        # cv2.imshow("button detector", cv_image)
+        # cv2.waitKey(3)
 
-        try:
-            # publish the processed image
-            self.image_pub.publish(self.bridge.cv2_to_imgmsg(cv_image, "bgr8"))
-        except CvBridgeError as e:
-            print(e)
+        # try:
+        # publish the processed image
+        #     self.image_pub.publish(self.bridge.cv2_to_imgmsg(cv_image, "bgr8"))
+        # except CvBridgeError as e:
+        #     print(e)
 
     def update_match(self, cv_image, scale_min, scale_max, temp_img, threshold):
         """
@@ -118,7 +122,6 @@ class armadillo_elevator_node:
          self.button_location, \
          self.button_height, \
          self.button_width) = bf.find_match_multi_size(scale_min, scale_max, temp_img, threshold)
-
 
     ###########################################Dispatching for pushing button###########################################
 
@@ -156,10 +159,10 @@ class armadillo_elevator_node:
 
     def move_control4(self, cv_image, img_width, img_height):
         # final check if aligned
-        X = img_width/2 - (self.button_location[0] + self.button_width * self.press_offset_x)
+        X = img_width / 2 - (self.button_location[0] + self.button_width * self.press_offset_x) - 30
 
         # if aligned, lift torso and press
-        if 5 > X > -5:
+        if 15 >= X >= -15:
             print("\033[1;33m[DEBUG]: aligned, lift torso and press\nX = {}\033[0m".format(X))
             if self.final_align:
                 self.update_match(cv_image, self.min_scale, self.max_scale, self.button_img, 0.7)
@@ -179,7 +182,7 @@ class armadillo_elevator_node:
             self.pb.status = 2
 
     def move_control5(self, cv_image, img_width, img_height):
-        torso_h = (1 - (self.button_location[1] + self.button_height / 2) / float(img_height))/5
+        torso_h = (1 - (self.button_location[1] + self.button_height / 2) / float(img_height))
         print("torso height = {}".format(torso_h))
         self.pb.move_torso(torso_h)
 
