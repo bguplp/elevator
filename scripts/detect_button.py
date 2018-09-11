@@ -5,7 +5,7 @@ import numpy as np
 import os
 import rospy
 import cv2
-from sensor_msgs.msg import CompressedImage
+from sensor_msgs.msg import Image, CompressedImage
 from control_msgs.msg import GripperCommandActionGoal
 from cv_bridge import CvBridge, CvBridgeError
 from button_finder import Button_finder
@@ -17,7 +17,6 @@ class armadillo_elevator_node:
     """
     This node is responsible for handling the elevator mission with Armadillo2 robot.
     """
-
     def __init__(self):
         # get outer button images and offsets
         self.button_img = rospy.get_param('~button_img')
@@ -80,9 +79,9 @@ class armadillo_elevator_node:
             print(e)
 
         img_height, img_width = cv_image.shape[:2]
-        # crop arm from kinect image
-        cv_image = cv_image[0:img_height - 150, 0:img_width - 100]
-        img_height, img_width = cv_image.shape[:2]
+	# corp arm from kinect image
+	cv_image = cv_image[0:img_height-150, 0:img_width-100]
+	img_height, img_width = cv_image.shape[:2]
 
         print("STATUS: {}".format(self.status_str[self.pb.status]))
         self.move_control[self.pb.status](cv_image, img_width, img_height)
@@ -106,7 +105,7 @@ class armadillo_elevator_node:
         # cv2.waitKey(3)
 
         # try:
-        # publish the processed image
+            # publish the processed image
         #     self.image_pub.publish(self.bridge.cv2_to_imgmsg(cv_image, "bgr8"))
         # except CvBridgeError as e:
         #     print(e)
@@ -123,6 +122,7 @@ class armadillo_elevator_node:
          self.button_height, \
          self.button_width) = bf.find_match_multi_size(scale_min, scale_max, temp_img, threshold)
 
+
     ###########################################Dispatching for pushing button###########################################
 
     # def move_control_debug(self, cv_image, img_width, img_height):
@@ -134,7 +134,7 @@ class armadillo_elevator_node:
     #     return
 
     def move_control0(self, cv_image, img_width, img_height):
-        self.update_match(cv_image, self.min_scale, self.max_scale, self.button_img, 0.7)
+        self.update_match(cv_image, self.min_scale, self.max_scale, self.button_img, 0.6)
         self.pb.status = 1
 
     def move_control1(self, cv_image, img_width, img_height):
@@ -148,10 +148,14 @@ class armadillo_elevator_node:
                 self.pb.status = 0
 
     def move_control2(self, cv_image, img_width, img_height):
+	if not self.detected:
+	   self.counter = 0
+	   self.pb.status = 0
+	   return
         self.counter += 1
         if self.counter >= 5:
             self.counter = 0
-            self.update_match(cv_image, self.scale, self.scale, self.button_img, 0.7)
+            self.update_match(cv_image, self.scale, self.scale, self.button_img, 0.6)
             self.pb.move_align(self.button_location[0] + self.button_width * self.press_offset_x, img_width)
 
     def move_control3(self, cv_image, img_width, img_height):
@@ -159,16 +163,16 @@ class armadillo_elevator_node:
 
     def move_control4(self, cv_image, img_width, img_height):
         # final check if aligned
-        X = img_width / 2 - (self.button_location[0] + self.button_width * self.press_offset_x) - 30
+        X = img_width/2 - (self.button_location[0] + self.button_width * self.press_offset_x) - 30
 
         # if aligned, lift torso and press
         if 15 >= X >= -15:
             print("\033[1;33m[DEBUG]: aligned, lift torso and press\nX = {}\033[0m".format(X))
             if self.final_align:
-                self.update_match(cv_image, self.min_scale, self.max_scale, self.button_img, 0.7)
+                self.update_match(cv_image, self.min_scale, self.max_scale, self.button_img, 0.65)
                 self.final_align = 0
             else:
-                self.update_match(cv_image, self.scale, self.scale, self.button_img, 0.7)
+                self.update_match(cv_image, self.scale, self.scale, self.button_img, 0.6)
 
             self.counter += 1
             if self.counter >= 10:
@@ -182,7 +186,9 @@ class armadillo_elevator_node:
             self.pb.status = 2
 
     def move_control5(self, cv_image, img_width, img_height):
-        torso_h = (1 - (self.button_location[1] + self.button_height / 2) / float(img_height))
+	pixel_size = (float(self.pb.range)/4 + 0.015) / 100
+	pixel_h = img_height - (self.button_location[1] + self.button_height / 2)
+	torso_h = pixel_h * pixel_size + 0.08
         print("torso height = {}".format(torso_h))
         self.pb.move_torso(torso_h)
 
