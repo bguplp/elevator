@@ -1,18 +1,4 @@
 <?xml version="1.0"?>
-<!--USAGE
-full demo:
-roslaunch elevator elevator.launch gazebo:=true x:=1 y:=-2
-
-rosrun rviz rviz -d `rospack find armadillo2_navigation`/rviz/amcl.rviz
-
-only_elevator:
-roslaunch elevator elevator.launch gazebo:=true Y:=0.3
-
-rosrun rviz rviz -d `rospack find armadillo2_navigation`/rviz/amcl.rviz
-
-roslaunch armadillo2 armadillo2.launch moveit:=true intel_cam:=true lidar:=true kinect:=true
--->
-
 <launch>
 
 
@@ -23,6 +9,7 @@ roslaunch armadillo2 armadillo2.launch moveit:=true intel_cam:=true lidar:=true 
  <arg name="pressed_inner_button_img" default="$(find elevator)/img/level2_pressed_sim.png" doc="path to pressed inner button image"/>
  <arg name="press_offset_x" default="0.75" doc="offset from button_img to left corner to pushing spot"/>
  <arg name="press_offset_y" default="0.0" doc="offset from button_img to left corner to pushing spot"/>
+ <arg name="button_size" default="0.025" doc="the diameter of the button"/>
 
   <!-- <node name="arm_server_node" pkg="elevator" type="arm_server_node.py" output="screen"/> -->
 
@@ -33,6 +20,7 @@ roslaunch armadillo2 armadillo2.launch moveit:=true intel_cam:=true lidar:=true 
      <param name="pressed_inner_button_img" value="$(arg pressed_inner_button_img)"/>
      <param name="press_offset_x" value="$(arg press_offset_x)"/>
      <param name="press_offset_y" value="$(arg press_offset_y)"/>
+     <param name="button_size" value="$(arg button_size)"/>
    </node>
 
 </launch>

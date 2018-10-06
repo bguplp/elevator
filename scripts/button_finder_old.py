@@ -4,12 +4,11 @@ import numpy as np
 
 class Button_finder:
 
-    def __init__(self, img_rgb, acc_certainty):
+    def __init__(self, img_rgb):
         self.img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
         self.w = -1
         self.h = -1
         self.res = -1
-        self.acc_certainty = acc_certainty
 
     def find_match_multi_size(self, scale_min, scale_max, temp_img, threshold):
         # detected, \
@@ -23,14 +22,13 @@ class Button_finder:
         origin_w, origin_h = template.shape[::-1]
         scale = scale_max
         curr_scale = scale_max
-        while scale >= scale_min - 0.05:  # floating points need small error, otherwise it might get wrong answer
+        while scale >= scale_min:
             scaled_template = cv2.resize(template, (int(scale * origin_w), int(scale * origin_h)))
             self.w, self.h = scaled_template.shape[::-1]
             self.res = cv2.matchTemplate(self.img_gray, scaled_template, cv2.TM_CCOEFF_NORMED)
-            # print("scale {}".format(scale))
             curr_match = self.find_match(0.95, threshold)
 
-            if curr_match[1] >= self.acc_certainty:
+            if curr_match[1] == 0.95:
                 return scale, curr_match
             elif curr_match[1] > ans[1]:
                 ans = curr_match
@@ -55,7 +53,7 @@ class Button_finder:
         loc = np.where(self.res >= threshold)
         pts = zip(*loc[::-1])
         if not len(pts):
-            if threshold >= min_threshold:
+            if threshold >= 0.7:
                 return self.find_match(threshold - 0.005, min_threshold)
             else:
                 return 0, -1, (-1, -1), -1, -1
