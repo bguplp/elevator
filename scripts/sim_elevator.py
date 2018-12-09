@@ -10,6 +10,11 @@ from os.path import expanduser
 
 
 class sim_elevator:
+    """
+    This node is responsible for opening/closing door
+    and for changing button to pressed in simulation,
+    using gazebo services: get_world_properties, spawn_sdf_model, delete_model.
+    """
     home = expanduser('~')
     panel_pressed_sdf = home + '/.gazebo/models/button_panel_pressed/model.sdf'
     elevator_door_sdf = home + '/.gazebo/models/elevator_door/model.sdf'
@@ -112,7 +117,7 @@ class sim_elevator:
                 self.del_model("elevator_door")
                 rospy.loginfo("[sim_elevator_node]: door opened")
                 # close door after 30 seconds
-                # rospy.sleep(40)
+                # rospy.sleep(30)
                 # door_pose = Pose()
                 # door_pose.position.x = 0.964234
                 # door_pose.position.y = 1.064952

@@ -11,7 +11,14 @@ from tf.transformations import quaternion_from_euler
 
 
 class move_base_client:
+    """
+    this node is a client for the move_base server,
+    to simplify move_base goals
 
+    USAGE:
+        given a set of points and a set of yaw degrees (format explained in launch file)
+        it will build and send a set of goals to the move_base server.
+    """
     def __init__(self, points, angles):
 
         rospy.init_node('move_base_client')

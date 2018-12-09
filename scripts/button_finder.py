@@ -3,7 +3,10 @@ import numpy as np
 
 
 class Button_finder:
-
+    """
+    This node is responsible for the button detection
+    using template matching in multiple scales
+    """
     def __init__(self, img_rgb, acc_certainty):
         self.img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
         self.w = -1
@@ -27,7 +30,6 @@ class Button_finder:
             scaled_template = cv2.resize(template, (int(scale * origin_w), int(scale * origin_h)))
             self.w, self.h = scaled_template.shape[::-1]
             self.res = cv2.matchTemplate(self.img_gray, scaled_template, cv2.TM_CCOEFF_NORMED)
-            # print("scale {}".format(scale))
             curr_match = self.find_match(0.95, threshold)
 
             if curr_match[1] >= self.acc_certainty:

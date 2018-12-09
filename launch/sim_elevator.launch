@@ -1,5 +1,88 @@
 <?xml version="1.0"?>
+<!--USAGE
+full demo:
+roslaunch elevator sim_elevator.launch x:=1 y:=-2
+
+rosrun rviz rviz -d `rospack find armadillo2_navigation`/rviz/amcl.rviz
+
+only_elevator:
+roslaunch elevator sim_elevator.launch Y:=0.3
+
+rosrun rviz rviz -d `rospack find armadillo2_navigation`/rviz/amcl.rviz
+
+-->
 
 <launch>
+
+
+ <!--settings for elevator-->
+ <arg name="panel_img" default="$(find elevator)/img/button_sim.png" doc="path to buttons panel image"/>
+ <arg name="button_img" default="$(find elevator)/img/button_sim_big.png" doc="path to button image"/>
+ <arg name="pressed_button_img" default="$(find elevator)/img/button_sim_pressed.png" doc="path to pressed button image"/>
+ <arg name="inner_button_img" default="$(find elevator)/img/level2_sim.png" doc="path to inner button image"/>
+ <arg name="pressed_inner_button_img" default="$(find elevator)/img/level2_pressed_sim.png" doc="path to pressed inner button image"/>
+ <arg name="press_offset_x" default="0.5" doc="offset from button_img to left corner to pushing spot"/>
+ <arg name="press_offset_y" default="0.5" doc="offset from button_img to left corner to pushing spot"/>
+ <arg name="acc_certainty" default="0.75" doc="accept immediately above this level of certainty"/>
+ <arg name="button_size" default="0.025" doc="the diameter of the button"/>
+ <arg name="show_image" default="false" doc="show processed image"/>
+ <arg name="show_status" default="true" doc="show status messages"/>
+
+  <!--common settings for armadillo2-->
+  <arg name="world_name" default="$(find elevator)/worlds/only_elevator.world"/>
+  <arg name="x" default="0.0"/>
+  <arg name="y" default="0.0"/>
+  <arg name="z" default="0.0"/>
+  <arg name="Y" default="0.0" />
+  <arg name="moveit" default="true"/>
+  <arg name="intel_cam" default="true"/>
+  <arg name="kinect" default="true"/>
+  <arg name="lidar" default="true"/>
+  <arg name="amcl" default="true"/>
+  <arg name="have_map" default="true" doc="set to true to use pre-saved map"/>
+  <arg name="map" default="$(find elevator)/maps/only_elevator.yaml" doc="pre-saved map path"/>
+  <arg name="move_base" default="true"/>
+  <arg name="teleop" default="false" doc="allow armadillo2 joy teleop"/>
+
+  <include file="$(find armadillo2)/launch/armadillo2.launch">
+    <arg name="gazebo" value="true"/>
+    <arg name="world_name" value="$(arg world_name)"/>
+    <arg name="x" value="$(arg x)"/>
+    <arg name="y" value="$(arg y)"/>
+    <arg name="z" value="$(arg z)"/>
+    <arg name="Y" value="$(arg Y)"/>
+    <arg name="moveit" value="$(arg moveit)"/>
+    <arg name="intel_cam" value="$(arg intel_cam)"/>
+    <arg name="kinect" value="$(arg kinect)"/>
+    <arg name="lidar" value="$(arg lidar)"/>
+    <arg name="gmapping" value="false"/>
+    <arg name="hector_slam" value="false"/>
+    <arg name="amcl" value="$(arg amcl)"/>
+    <arg name="have_map" value="$(arg have_map)"/>
+    <arg name="map" value="$(arg map)"/>
+    <arg name="move_base" value="$(arg move_base)"/>
+    <arg name="robot_localization" value="false"/>
+    <arg name="teleop" value="$(arg teleop)"/>
+  </include>
+
+  <!-- <include file="$(find armadillo2_control)/launch/armadillo2_hw_controllers.launch" /> -->
+
   <node name="sim_elevator" pkg="elevator" type="sim_elevator.py" output="screen"/>
+
+  <node name="arm_server_node" pkg="elevator" type="arm_server_node.py" output="screen"/>
+
+   <node name="armadillo_elevator_node" pkg="elevator" type="elevator_node.py" output="screen">
+     <param name="panel_img" value="$(arg panel_img)"/>
+     <param name="button_img" value="$(arg button_img)"/>
+     <param name="pressed_button_img" value="$(arg pressed_button_img)"/>
+     <param name="inner_button_img" value="$(arg inner_button_img)"/>
+     <param name="pressed_inner_button_img" value="$(arg pressed_inner_button_img)"/>
+     <param name="press_offset_x" value="$(arg press_offset_x)"/>
+     <param name="press_offset_y" value="$(arg press_offset_y)"/>
+     <param name="acc_certainty" value="$(arg acc_certainty)"/>
+     <param name="button_size" value="$(arg button_size)"/>
+     <param name="show_image" value="$(arg show_image)"/>
+     <param name="show_status" value="$(arg show_status)"/>
+   </node>
+
 </launch>
