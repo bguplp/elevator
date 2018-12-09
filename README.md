@@ -22,9 +22,9 @@ $ catkin_make
 ```
 ln -nsf ~/catkin_ws/src/elevator/models/* ~/.gazebo/models
 ```
-* Add the following line to <armadillo2_moveit_config package>/config/armadillo2_robot.srdf
+* Add the following lines to <armadillo2_moveit_config package>/config/armadillo2_robot.srdf
 under the <robot name="armadillo2_robot"> tag:
-```
+```xml
 <group_state name="button" group="arm">
     <joint name="rotation1_joint" value="0" />
     <joint name="rotation2_joint" value="0" />
@@ -36,7 +36,26 @@ under the <robot name="armadillo2_robot"> tag:
 ```
 
 ## Usage
-* TODO
+* for simulation run:
+```
+roslaunch elevator sim_elevator.launch
+```
+it's also possible to set robot's initial position with these args: x, y, Y
+
+* for real robot run in separate consoles:
+```
+roslaunch armadillo2 armadillo2.launch lidar:=true move_base:=true moveit:=true intel_cam:=true kinect:=true amcl:=true have_map:=true map:=<path to map yaml file>
+roslaunch elevator arm_server.launch
+roslaunch elevator elevator.launch 
+```
+* additional features and options are documented in the launch files and scripts
+
+## Some Notes
+* __IMPORTANT__: use the _show_image_ option for debugging only, as it affects the algorithms accuracy and speed
+* You may want choose to set a panel image if you want to start button detection from more than 1 meter away
+* To maximize detection success rate, use the robot's cameras to take the images and include enough features.
+* You may choose to take an image in which the pressing area is not in the center and use the _press_offset_x_ and _press_offset_y_ options to tell the robot where to press
+* __useful standalones for other projects__: you may use _arm_server_node_ or _nav_client_. find the documentation in their launch files and scripts.
 
 ## Contacts
 The repository is maintained by Omri Eitan, omrieitan@gmail.com
