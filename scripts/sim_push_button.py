@@ -4,11 +4,10 @@ import rospy
 from std_msgs.msg import Float64
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Range, LaserScan
-from control_msgs.msg import JointControllerState
 import move_arm
 
 RAYS_NUM = 689
-PRESSING_DISTANCE = 0.445
+PRESSING_DISTANCE = 0.4
 INTEL_BUTTON_LOC = 555
 
 
@@ -25,7 +24,6 @@ class push_button:
 
         rospy.Subscriber("/scan", LaserScan, self.scan_callback)
         rospy.Subscriber("/URF/front", Range, self.urf_callback)
-        rospy.Subscriber("/torso_position_controller/state", JointControllerState, self.torso_callback)
 
         self.range = 2
         self.mid_scan = 2
@@ -39,13 +37,10 @@ class push_button:
     def scan_callback(self, data):
         self.mid_scan = data.ranges[int(RAYS_NUM / 2)]
 
-    def torso_callback(self, data):
-        self.torso_height = "%.4f" % data.process_value
-
     def move_align(self, x, w):
         X = w / 2 - x
 
-        if X > 30 or X < -30:
+        if X > 15 or X < -15:
             self.counter_align = 0
             twist = Twist()
             if X < 0:
@@ -86,10 +81,7 @@ class push_button:
 
     def move_torso(self, torso_h):
         self.torso_pub.publish(torso_h)
-
-        while float(self.torso_height) < torso_h - 0.01 or float(self.torso_height) > torso_h + 0.055:
-            print("waiting for torso")
-            rospy.sleep(2)
+        rospy.sleep(3)
         self.status += 1
         print("done moving torso")
 

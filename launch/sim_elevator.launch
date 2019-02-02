@@ -17,7 +17,7 @@ rosrun rviz rviz -d `rospack find armadillo2_navigation`/rviz/amcl.rviz
 
  <!--settings for elevator-->
  <arg name="panel_img" default="$(find elevator)/img/button_sim.png" doc="path to buttons panel image"/>
- <arg name="button_img" default="$(find elevator)/img/button_sim_big.png" doc="path to button image"/>
+ <arg name="button_img" default="$(find elevator)/img/button_sim.png" doc="path to button image"/>
  <arg name="pressed_button_img" default="$(find elevator)/img/button_sim_pressed.png" doc="path to pressed button image"/>
  <arg name="inner_button_img" default="$(find elevator)/img/level2_sim.png" doc="path to inner button image"/>
  <arg name="pressed_inner_button_img" default="$(find elevator)/img/level2_pressed_sim.png" doc="path to pressed inner button image"/>
@@ -71,7 +71,7 @@ rosrun rviz rviz -d `rospack find armadillo2_navigation`/rviz/amcl.rviz
 
   <node name="arm_server_node" pkg="elevator" type="arm_server_node.py" output="screen"/>
 
-   <node name="armadillo_elevator_node" pkg="elevator" type="elevator_node.py" output="screen">
+   <node name="armadillo_elevator_node" pkg="elevator" type="sim_elevator_node.py" output="screen">
      <param name="panel_img" value="$(arg panel_img)"/>
      <param name="button_img" value="$(arg button_img)"/>
      <param name="pressed_button_img" value="$(arg pressed_button_img)"/>

@@ -9,12 +9,12 @@ RAD_PER_PXL = (0.00152898125, 0.0017388641)
 INTEL_BUTTON_CENTER = 555
 
 if __name__ == '__main__':
-    template = '/home/omri/catkin_ws/src/armadillo2/armadillo2_demos/elevator/img/button_up.png'
-    img = cv2.imread('/home/omri/catkin_ws/src/armadillo2/armadillo2_demos/elevator/img/button_raw_day.png')
+    template = '/home/omri/catkin_ws/src/elevator/img/button_sim.png'
+    img = cv2.imread('/home/omri/catkin_ws/src/elevator/img/test1.png')
 
     img_height, img_width = img.shape[:2]
-    img = img[0:img_height - 150, 0:img_width]
-    img_height, img_width = img.shape[:2]
+    # img = img[0:img_height - 150, 0:img_width]
+    # img_height, img_width = img.shape[:2]
 
     bf = Button_finder(img, 0.8)
 
