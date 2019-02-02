@@ -24,7 +24,7 @@ ln -nsf ~/catkin_ws/src/elevator/models/* ~/.gazebo/models
 ```
 * Add the following line to <armadillo2_moveit_config package>/config/armadillo2_robot.srdf
 under the <robot name="armadillo2_robot"> tag:
-```
+```xml
 <group_state name="button" group="arm">
     <joint name="rotation1_joint" value="0" />
     <joint name="rotation2_joint" value="0" />
@@ -36,7 +36,16 @@ under the <robot name="armadillo2_robot"> tag:
 ```
 
 ## Usage
-* TODO
+* for stand alone demo run:
+```
+roslaunch elevator sim_elevator.launch
+```
+* to run as part of another algorithm:
+```
+roslaunch elevator sim_elevator.launch stand_alone:=false
+```
+and don't forget to set the images.
+stand_alone:=false assume you've already launched armadillos.
 
 ## Contacts
 The repository is maintained by Omri Eitan, omrieitan@gmail.com

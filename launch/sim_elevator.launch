@@ -1,15 +1,9 @@
 <?xml version="1.0"?>
 <!--USAGE
-full demo:
-roslaunch elevator sim_elevator.launch x:=1 y:=-2
+for stand alone demo:
+roslaunch elevator sim_elevator.launch
 
-rosrun rviz rviz -d `rospack find armadillo2_navigation`/rviz/amcl.rviz
-
-only_elevator:
-roslaunch elevator sim_elevator.launch Y:=0.3
-
-rosrun rviz rviz -d `rospack find armadillo2_navigation`/rviz/amcl.rviz
-
+for non stand alone, don't forget to set the images.
 -->
 
 <launch>
@@ -27,6 +21,7 @@ rosrun rviz rviz -d `rospack find armadillo2_navigation`/rviz/amcl.rviz
  <arg name="button_size" default="0.025" doc="the diameter of the button"/>
  <arg name="show_image" default="false" doc="show processed image"/>
  <arg name="show_status" default="true" doc="show status messages"/>
+ <arg name="stand_alone" default="true" doc="if not part of a bigger program"/>
 
   <!--common settings for armadillo2-->
   <arg name="world_name" default="$(find elevator)/worlds/only_elevator.world"/>
@@ -44,6 +39,7 @@ rosrun rviz rviz -d `rospack find armadillo2_navigation`/rviz/amcl.rviz
   <arg name="move_base" default="true"/>
   <arg name="teleop" default="false" doc="allow armadillo2 joy teleop"/>
 
+<group if="$(arg stand_alone)" >
   <include file="$(find armadillo2)/launch/armadillo2.launch">
     <arg name="gazebo" value="true"/>
     <arg name="world_name" value="$(arg world_name)"/>
@@ -65,9 +61,9 @@ rosrun rviz rviz -d `rospack find armadillo2_navigation`/rviz/amcl.rviz
     <arg name="teleop" value="$(arg teleop)"/>
   </include>
 
-  <!-- <include file="$(find armadillo2_control)/launch/armadillo2_hw_controllers.launch" /> -->
-
   <node name="sim_elevator" pkg="elevator" type="sim_elevator.py" output="screen"/>
+
+</group>
 
   <node name="arm_server_node" pkg="elevator" type="arm_server_node.py" output="screen"/>
 
