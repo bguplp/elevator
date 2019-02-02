@@ -10,7 +10,11 @@ from tf.listener import TransformListener
 
 
 class arm_server_node(object):
-    # create messages that are used to publish feedback/result
+    """
+    This node is an action server, to help simplify arm movement,
+    using moveit_commander
+    """
+
     _feedback = elevator.msg.SimpleTargetFeedback()
     _result = elevator.msg.SimpleTargetResult()
 
@@ -25,7 +29,7 @@ class arm_server_node(object):
         self.group.set_pose_reference_frame("/base_footprint")
         self.group.set_max_velocity_scaling_factor(1)
         self.group.set_num_planning_attempts(50)
-        self.group.set_planning_time(5)
+        self.group.set_planning_time(10)
         self.group.set_goal_position_tolerance(0.01)
         self.group.set_goal_orientation_tolerance(0.02)
 
@@ -62,17 +66,17 @@ class arm_server_node(object):
 
             origin_goal = PoseStamped()
             origin_goal.header.frame_id = "/gripper_link"
-            origin_goal.pose.position.x = goal.x #+ eef_pose.pose.position.x
-            origin_goal.pose.position.y = goal.y #+ eef_pose.pose.position.y
-            origin_goal.pose.position.z = goal.z #+ eef_pose.pose.position.z
-            # origin_goal.pose.orientation = eef_pose.pose.orientation
+            origin_goal.pose.position.x = goal.x
+            origin_goal.pose.position.y = goal.y
+            origin_goal.pose.position.z = goal.z
+
             transformed_goal = self.tf_listener.transformPose("/base_footprint", origin_goal)
             transformed_goal.pose.orientation.x = 0
             transformed_goal.pose.orientation.y = 0
             transformed_goal.pose.orientation.z = 0
             transformed_goal.pose.orientation.w = 0
             self.group.set_pose_target(transformed_goal)
-            # print("transformed_goal: {}".format(transformed_goal))
+
             plan = self.group.plan()
             self.group.execute(plan)
 

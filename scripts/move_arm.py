@@ -4,7 +4,18 @@ import rospy
 import actionlib
 from arm_server.msg import SimpleTargetAction, SimpleTargetGoal
 
-
+"""
+this script simplify goals sending to arm_server_node
+USAGE:
+    import this script and use target_move(<x>, <y>, <z>, <frame>)
+    option1:
+        <frame>: the name of a link in robot description (IMPORTANT - starting with '/')
+        <x>, <y>, <z>: coordinates relative to <frame> - for the arm to move to.
+    option2:
+        <frame>: a named target ('button','cobra_center','driving',ect.) for the arm to move to
+            (IMPORTANT - not starting with '/')
+        <x>, <y>, <z>: irrelevant
+"""
 # Called once when the goal completes
 def target_done_callback(state, result):
     rospy.loginfo("[target_client]: finished in state [%d]", state)
@@ -31,7 +42,7 @@ def target_move(x, y, z, frame_id):
 
     # build goal
     goal = SimpleTargetGoal()
-    goal.frame_id = frame_id  # "/base_footprint" "/head_tilt_link" "/wrist_link"
+    goal.frame_id = frame_id
 
     # set target coordinates
     goal.x = x
@@ -46,4 +57,6 @@ if __name__ == '__main__':
     rospy.init_node('client_demo_node')
     rospy.loginfo("[client_demo]: started")
 
+#    target_move(0, 0, 0, "cobra_center")
+#    rospy.sleep(6)
     target_move(0, 0, 0, "driving")

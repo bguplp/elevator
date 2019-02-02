@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<!--WARNING when turning robot on, run this before moving arm:
+rosservice call /services/lift_arm "{}"-->
+<launch>
+  <node name="test" pkg="elevator" type="move_arm.py" output="screen">
+  </node>
+
+</launch>

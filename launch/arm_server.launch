@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+
+<launch>
+<node name="arm_server_node" pkg="elevator" type="arm_server_node.py" output="screen"/>
+</launch>

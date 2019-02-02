@@ -22,6 +22,18 @@ $ catkin_make
 ```
 ln -nsf ~/catkin_ws/src/elevator/models/* ~/.gazebo/models
 ```
+* Add the following line to <armadillo2_moveit_config package>/config/armadillo2_robot.srdf
+under the <robot name="armadillo2_robot"> tag:
+```
+<group_state name="button" group="arm">
+    <joint name="rotation1_joint" value="0" />
+    <joint name="rotation2_joint" value="0" />
+    <joint name="shoulder1_joint" value="0" />
+    <joint name="shoulder2_joint" value="0" />
+    <joint name="shoulder3_joint" value="0.773" />
+    <joint name="wrist_joint" value="0" />
+</group_state>
+```
 
 ## Usage
 * TODO
