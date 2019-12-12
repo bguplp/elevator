@@ -35,6 +35,15 @@ under the <robot name="armadillo2_robot"> tag:
 </group_state>
 ```
 
+* make sure you have manipulator_servers package in your `~/catkin_ws/src`, you can clone and build it as follow:
+
+```bash
+$ cd ~/catkin_ws/src
+$ git clone https://github.com/robotican/manipulator_servers.git
+$ cd ..
+$ catkin_make
+```
+
 ## Usage
 * for stand alone demo run:
 ```
